@@ -1,6 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'resto_card.dart';
 import 'database.dart';
 
 void main() {
@@ -37,23 +38,54 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Ranked Resto'),
-      ),
-      body: FutureBuilder(
-        future: fetchRestaurant(),
-        builder: (_, AsyncSnapshot<List<Restaurant>> restaurants) {
-          if (restaurants.hasData) {
-            return ListView.builder(
-              itemCount: restaurants.data!.length,
-              itemBuilder: (_, int index) => ListTile(
-                title: Text(restaurants.data![index].name),
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(20),
+              color: Theme.of(context).primaryColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Ranked Resto',
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('Recomended restaurants for you!'),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.search),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: fetchRestaurant(),
+                builder: (_, AsyncSnapshot<List<Restaurant>> restaurants) {
+                  if (restaurants.hasData) {
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: restaurants.data!.length,
+                      itemBuilder: (_, int index) =>
+                          RestoCard(restaurants.data![index]),
+                    );
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
