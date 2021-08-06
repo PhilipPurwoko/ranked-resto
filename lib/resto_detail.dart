@@ -27,6 +27,20 @@ class RestoDetail extends StatelessWidget {
               child: Image.network(
                 restaurant.pictureId,
                 fit: BoxFit.cover,
+                loadingBuilder: (
+                  BuildContext _,
+                  Widget img,
+                  ImageChunkEvent? loadingProgress,
+                ) {
+                  return loadingProgress == null
+                      ? img
+                      : Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!,
+                          ),
+                        );
+                },
               ),
             ),
             Padding(
@@ -68,7 +82,7 @@ class RestoDetail extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
                 'Foods',
                 style: Theme.of(context).textTheme.headline6,
@@ -76,6 +90,7 @@ class RestoDetail extends StatelessWidget {
             ),
             CarouselSlider(
               options: CarouselOptions(
+                enableInfiniteScroll: false,
                 height: 120.0,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 15),
@@ -88,6 +103,7 @@ class RestoDetail extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
                         child: Text(
@@ -101,7 +117,7 @@ class RestoDetail extends StatelessWidget {
               }).toList(),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
                 'Drinks',
                 style: Theme.of(context).textTheme.headline6,
@@ -109,6 +125,7 @@ class RestoDetail extends StatelessWidget {
             ),
             CarouselSlider(
               options: CarouselOptions(
+                enableInfiniteScroll: false,
                 height: 120.0,
                 autoPlay: true,
                 autoPlayInterval: Duration(seconds: 15),
@@ -121,6 +138,7 @@ class RestoDetail extends StatelessWidget {
                       margin: EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
                         child: Text(
@@ -133,6 +151,7 @@ class RestoDetail extends StatelessWidget {
                 );
               }).toList(),
             ),
+            SizedBox(height: 20),
           ],
         ),
       ),

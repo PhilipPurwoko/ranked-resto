@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'database.dart';
+import 'package:provider/provider.dart';
+import 'resto_provider.dart';
 import 'resto_card.dart';
 
 class RestoList extends StatefulWidget {
@@ -10,15 +10,27 @@ class RestoList extends StatefulWidget {
 }
 
 class _RestoListState extends State<RestoList> {
-  Future<List<Restaurant>> fetchRestaurant() async {
-    final String res =
-        await DefaultAssetBundle.of(context).loadString('assets/data.json');
-    final data = json.decode(res) as Map<String, dynamic>;
-    return Database.fromJson(data).restaurants;
+  bool _seachMode = false;
+  TextEditingController _searchController = TextEditingController();
+  FocusNode focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<RestaurantProvider>(context, listen: false).loadDatabase();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final RestaurantProvider restaurantProvider =
+        Provider.of<RestaurantProvider>(context);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -38,11 +50,33 @@ class _RestoListState extends State<RestoList> {
                   Row(
                     children: [
                       Expanded(
-                        child: Text('Recomended restaurants for you!'),
+                        child: _seachMode
+                            ? TextField(
+                                controller: _searchController,
+                                focusNode: focusNode,
+                                autofocus: true,
+                                decoration: const InputDecoration(
+                                  labelText: 'Search restaurant',
+                                ),
+                                onChanged: (String name) =>
+                                    restaurantProvider.searchResto(name),
+                                onSubmitted: (String name) =>
+                                    restaurantProvider.searchResto(name),
+                              )
+                            : Text('Recomended restaurants for you!'),
                       ),
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          if (_seachMode) {
+                            _searchController.clear();
+                            restaurantProvider.resetResto();
+                          }
+
+                          setState(() {
+                            _seachMode = !_seachMode;
+                          });
+                        },
+                        icon: Icon(_seachMode ? Icons.cancel : Icons.search),
                       ),
                     ],
                   ),
@@ -50,21 +84,17 @@ class _RestoListState extends State<RestoList> {
               ),
             ),
             Expanded(
-              child: FutureBuilder(
-                future: fetchRestaurant(),
-                builder: (_, AsyncSnapshot<List<Restaurant>> restaurants) {
-                  if (restaurants.hasData) {
-                    return ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: restaurants.data!.length,
-                      itemBuilder: (_, int index) =>
-                          RestoCard(restaurants.data![index]),
-                    );
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
+              child: restaurantProvider.restaurants == null
+                  ? Center(child: CircularProgressIndicator())
+                  : restaurantProvider.restaurants!.length <= 0
+                      ? Center(child: Text('Not Found'))
+                      : ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: restaurantProvider.restaurants!.length,
+                          itemBuilder: (_, int index) => RestoCard(
+                            restaurantProvider.restaurants![index],
+                          ),
+                        ),
             ),
           ],
         ),

@@ -1,15 +1,9 @@
-import 'dart:convert';
-
-Database databaseFromJson(String str) => Database.fromJson(json.decode(str));
-
-String databaseToJson(Database data) => json.encode(data.toJson());
-
 class Database {
   Database({
     required this.restaurants,
   });
 
-  List<Restaurant> restaurants;
+  final List<Restaurant> restaurants;
 
   factory Database.fromJson(Map<String, dynamic> json) => Database(
         restaurants: List<Restaurant>.from(
