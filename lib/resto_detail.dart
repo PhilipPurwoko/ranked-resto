@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'database.dart';
 
 class RestoDetail extends StatelessWidget {
@@ -18,15 +19,120 @@ class RestoDetail extends StatelessWidget {
             TextButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: Icon(Icons.arrow_back),
+              style: ButtonStyle(alignment: Alignment.centerLeft),
               label: Text('Go Back'),
             ),
-            Image.network(restaurant.pictureId),
-            Text(restaurant.name),
-            Text(restaurant.city),
-            Text(restaurant.rating.toString()),
-            Text(restaurant.description),
-            ...restaurant.menus.foods.map((e) => Text(e.name)).toList(),
-            ...restaurant.menus.drinks.map((e) => Text(e.name)).toList()
+            AspectRatio(
+              aspectRatio: 16.0 / 9.0,
+              child: Image.network(
+                restaurant.pictureId,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+              child: Text(
+                restaurant.name,
+                style: Theme.of(context).textTheme.headline5,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    size: 16,
+                  ),
+                  Text(restaurant.city),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    size: 16,
+                  ),
+                  Text(restaurant.rating.toString()),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                restaurant.description,
+                textAlign: TextAlign.justify,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Foods',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 120.0,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 15),
+              ),
+              items: restaurant.menus.foods.map((Food food) {
+                return Builder(
+                  builder: (BuildContext ctx) {
+                    return Container(
+                      width: MediaQuery.of(ctx).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          food.name,
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Drinks',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 120.0,
+                autoPlay: true,
+                autoPlayInterval: Duration(seconds: 15),
+              ),
+              items: restaurant.menus.drinks.map((Drink drink) {
+                return Builder(
+                  builder: (BuildContext ctx) {
+                    return Container(
+                      width: MediaQuery.of(ctx).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          drink.name,
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
           ],
         ),
       ),

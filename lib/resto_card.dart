@@ -15,33 +15,39 @@ class RestoCard extends StatelessWidget {
           arguments: restaurant,
         );
       },
-      child: ListTile(
-        leading: Image.network(
-          restaurant.pictureId,
-          fit: BoxFit.cover,
-        ),
-        title: Text(restaurant.name),
-        subtitle: Column(
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.location_on,
-                  size: 14,
-                ),
-                Text(restaurant.city),
-              ],
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: ListTile(
+          leading: AspectRatio(
+            aspectRatio: 16.0 / 9.0,
+            child: Image.network(
+              restaurant.pictureId,
+              fit: BoxFit.cover,
             ),
-            Row(
-              children: [
-                Icon(
-                  Icons.star,
-                  size: 14,
-                ),
-                Text(restaurant.rating.toString()),
-              ],
-            ),
-          ],
+          ),
+          title: Text(restaurant.name),
+          subtitle: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    size: 14,
+                  ),
+                  Text(restaurant.city),
+                ],
+              ),
+              Row(
+                children: [
+                  Icon(
+                    Icons.star,
+                    size: 14,
+                  ),
+                  Text(restaurant.rating.toString()),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

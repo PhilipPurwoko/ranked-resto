@@ -12,7 +12,7 @@ class RestoList extends StatefulWidget {
 class _RestoListState extends State<RestoList> {
   Future<List<Restaurant>> fetchRestaurant() async {
     final String res =
-        await DefaultAssetBundle.of(context).loadString('data.json');
+        await DefaultAssetBundle.of(context).loadString('assets/data.json');
     final data = json.decode(res) as Map<String, dynamic>;
     return Database.fromJson(data).restaurants;
   }
