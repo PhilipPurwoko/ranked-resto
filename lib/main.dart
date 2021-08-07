@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'resto_list.dart';
 import 'resto_detail.dart';
 import 'resto_provider.dart';
+import 'theme.dart';
 
 void main() {
   runApp(RankedResto());
@@ -20,9 +21,7 @@ class RankedResto extends StatelessWidget {
       child: MaterialApp(
         title: 'Ranked Resto',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: theme,
         initialRoute: RestoList.routeName,
         routes: {
           RestoList.routeName: (_) => RestoList(),

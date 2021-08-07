@@ -42,7 +42,10 @@ class RestoCard extends StatelessWidget {
               ),
             ),
           ),
-          title: Text(restaurant.name),
+          title: Text(
+            restaurant.name,
+            style: Theme.of(context).textTheme.headline6,
+          ),
           subtitle: Column(
             children: [
               Row(
@@ -51,7 +54,10 @@ class RestoCard extends StatelessWidget {
                     Icons.location_on,
                     size: 14,
                   ),
-                  Text(restaurant.city),
+                  Text(
+                    restaurant.city,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 ],
               ),
               Row(
@@ -60,7 +66,10 @@ class RestoCard extends StatelessWidget {
                     Icons.star,
                     size: 14,
                   ),
-                  Text(restaurant.rating.toString()),
+                  Text(
+                    restaurant.rating.toString(),
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 ],
               ),
             ],

@@ -18,9 +18,20 @@ class RestoDetail extends StatelessWidget {
           children: [
             TextButton.icon(
               onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(Icons.arrow_back),
-              style: ButtonStyle(alignment: Alignment.centerLeft),
-              label: Text('Go Back'),
+              icon: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).primaryColor,
+              ),
+              style: ButtonStyle(
+                alignment: Alignment.centerLeft,
+              ),
+              label: Text(
+                'Go Back',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             AspectRatio(
               aspectRatio: 16.0 / 9.0,
@@ -47,7 +58,7 @@ class RestoDetail extends StatelessWidget {
               padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
               child: Text(
                 restaurant.name,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
             Padding(
@@ -58,7 +69,10 @@ class RestoDetail extends StatelessWidget {
                     Icons.location_on,
                     size: 16,
                   ),
-                  Text(restaurant.city),
+                  Text(
+                    restaurant.city,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 ],
               ),
             ),
@@ -70,7 +84,10 @@ class RestoDetail extends StatelessWidget {
                     Icons.star,
                     size: 16,
                   ),
-                  Text(restaurant.rating.toString()),
+                  Text(
+                    restaurant.rating.toString(),
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 ],
               ),
             ),
@@ -79,6 +96,7 @@ class RestoDetail extends StatelessWidget {
               child: Text(
                 restaurant.description,
                 textAlign: TextAlign.justify,
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             Padding(
@@ -108,7 +126,7 @@ class RestoDetail extends StatelessWidget {
                       child: Center(
                         child: Text(
                           food.name,
-                          style: TextStyle(fontSize: 16.0),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ),
                     );
@@ -143,7 +161,7 @@ class RestoDetail extends StatelessWidget {
                       child: Center(
                         child: Text(
                           drink.name,
-                          style: TextStyle(fontSize: 16.0),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ),
                     );
