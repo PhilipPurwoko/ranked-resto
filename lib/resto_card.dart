@@ -19,24 +19,14 @@ class RestoCard extends StatelessWidget {
         padding: const EdgeInsets.only(top: 10),
         child: ListTile(
           leading: AspectRatio(
-            aspectRatio: 1 / 1,
-            child: Image.network(
-              restaurant.pictureId,
-              fit: BoxFit.cover,
-              loadingBuilder: (
-                BuildContext _,
-                Widget img,
-                ImageChunkEvent? loadingProgress,
-              ) {
-                return loadingProgress == null
-                    ? img
-                    : Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!,
-                        ),
-                      );
-              },
+            aspectRatio: 16 / 9,
+            child: Hero(
+              tag: restaurant.id,
+              child: FadeInImage(
+                placeholder: const AssetImage('assets/placeholder.png'),
+                image: NetworkImage(restaurant.pictureId),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           title: Text(restaurant.name),

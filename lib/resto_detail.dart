@@ -24,23 +24,13 @@ class RestoDetail extends StatelessWidget {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 16.0 / 9.0,
-              child: Image.network(
-                restaurant.pictureId,
-                fit: BoxFit.cover,
-                loadingBuilder: (
-                  BuildContext _,
-                  Widget img,
-                  ImageChunkEvent? loadingProgress,
-                ) {
-                  return loadingProgress == null
-                      ? img
-                      : Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!,
-                          ),
-                        );
-                },
+              child: Hero(
+                tag: restaurant.id,
+                child: FadeInImage(
+                  placeholder: const AssetImage('assets/placeholder.png'),
+                  image: NetworkImage(restaurant.pictureId),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             Padding(

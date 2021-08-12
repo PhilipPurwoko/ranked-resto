@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ class RestoList extends StatefulWidget {
 
 class _RestoListState extends State<RestoList> {
   bool _searchMode = false;
+  bool _fadeTitle = false;
   final TextEditingController _searchController = TextEditingController();
   FocusNode focusNode = FocusNode();
 
@@ -42,7 +44,8 @@ class _RestoListState extends State<RestoList> {
                     _searchController.clear();
                     restaurantProvider.resetResto();
                     setState(() {
-                      _searchMode = !_searchMode;
+                      _searchMode = false;
+                      _fadeTitle = false;
                     });
                   },
                   icon: const Icon(Icons.arrow_back),
@@ -54,7 +57,6 @@ class _RestoListState extends State<RestoList> {
                   focusNode: focusNode,
                   autofocus: true,
                   cursorColor: const Color(0xFF98ee99),
-                  // style: const TextStyle(color: Color(0xFF98ee99)),
                   decoration: const InputDecoration(
                     labelText: 'Search restaurant',
                     fillColor: Color(0xFF98ee99),
@@ -77,13 +79,31 @@ class _RestoListState extends State<RestoList> {
                   onSubmitted: (String name) =>
                       restaurantProvider.searchResto(name),
                 )
-              : const Text('Ranked Resto'),
+              : AnimatedOpacity(
+                  opacity: _fadeTitle ? 0 : 1,
+                  onEnd: () {
+                    setState(() {
+                      _searchMode = !_searchMode;
+                    });
+                  },
+                  duration: const Duration(milliseconds: 300),
+                  child: AnimatedTextKit(
+                    isRepeatingAnimation: false,
+                    displayFullTextOnTap: true,
+                    animatedTexts: <TypewriterAnimatedText>[
+                      TypewriterAnimatedText(
+                        'Ranked Resto',
+                        speed: const Duration(milliseconds: 100),
+                      ),
+                    ],
+                  ),
+                ),
           actions: <IconButton>[
             if (!_searchMode)
               IconButton(
                 onPressed: () {
                   setState(() {
-                    _searchMode = !_searchMode;
+                    _fadeTitle = true;
                   });
                 },
                 icon: const Icon(Icons.search),
