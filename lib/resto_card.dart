@@ -3,8 +3,8 @@ import 'database.dart';
 import 'resto_detail.dart';
 
 class RestoCard extends StatelessWidget {
-  final Restaurant restaurant;
   const RestoCard(this.restaurant, {Key? key}) : super(key: key);
+  final Restaurant restaurant;
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +47,10 @@ class RestoCard extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           subtitle: Column(
-            children: [
+            children: <Widget>[
               Row(
-                children: [
-                  Icon(
+                children: <Widget>[
+                  const Icon(
                     Icons.location_on,
                     size: 14,
                   ),
@@ -61,8 +61,8 @@ class RestoCard extends StatelessWidget {
                 ],
               ),
               Row(
-                children: [
-                  Icon(
+                children: <Widget>[
+                  const Icon(
                     Icons.star,
                     size: 14,
                   ),

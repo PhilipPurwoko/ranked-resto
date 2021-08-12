@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'resto_list.dart';
 import 'resto_detail.dart';
+import 'resto_list.dart';
 import 'resto_provider.dart';
 import 'theme.dart';
 
@@ -13,8 +13,8 @@ class RankedResto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
+      providers: <ChangeNotifierProvider<ChangeNotifier>>[
+        ChangeNotifierProvider<RestaurantProvider>(
           create: (_) => RestaurantProvider(),
         ),
       ],
@@ -23,9 +23,9 @@ class RankedResto extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: theme,
         initialRoute: RestoList.routeName,
-        routes: {
+        routes: <String, Widget Function(BuildContext)>{
           RestoList.routeName: (_) => RestoList(),
-          RestoDetail.routeName: (_) => RestoDetail(),
+          RestoDetail.routeName: (_) => const RestoDetail(),
         },
       ),
     );

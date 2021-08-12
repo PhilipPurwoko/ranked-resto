@@ -9,14 +9,14 @@ class RestaurantProvider with ChangeNotifier {
 
   Future<void> loadDatabase() async {
     final String res = await rootBundle.loadString('assets/data.json');
-    final data = json.decode(res) as Map<String, dynamic>;
+    final Map<String, dynamic> data = json.decode(res) as Map<String, dynamic>;
     _restaurant = Database.fromJson(data).restaurants;
     _searchedResto = _restaurant;
     notifyListeners();
   }
 
   List<Restaurant>? get restaurants {
-    return _searchedResto != null ? _searchedResto : null;
+    return _searchedResto;
   }
 
   void searchResto(String? name) {

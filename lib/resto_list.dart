@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'resto_provider.dart';
 import 'resto_card.dart';
+import 'resto_provider.dart';
 
 class RestoList extends StatefulWidget {
   static const String routeName = 'resto-list';
@@ -12,7 +12,7 @@ class RestoList extends StatefulWidget {
 
 class _RestoListState extends State<RestoList> {
   bool _seachMode = false;
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   FocusNode focusNode = FocusNode();
 
   @override
@@ -52,7 +52,7 @@ class _RestoListState extends State<RestoList> {
                           .copyWith(fontSize: 24),
                     ),
                     Row(
-                      children: [
+                      children: <Widget>[
                         Expanded(
                           child: _seachMode
                               ? TextField(
@@ -65,12 +65,12 @@ class _RestoListState extends State<RestoList> {
                                     labelStyle: TextStyle(
                                       color: Color(0xFF98ee99),
                                     ),
-                                    focusedBorder: const UnderlineInputBorder(
+                                    focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Color(0xFF98ee99),
                                       ),
                                     ),
-                                    enabledBorder: const UnderlineInputBorder(
+                                    enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Color(0xFF98ee99),
                                       ),
@@ -106,8 +106,8 @@ class _RestoListState extends State<RestoList> {
               ),
               Expanded(
                 child: restaurantProvider.restaurants == null
-                    ? Center(child: CircularProgressIndicator())
-                    : restaurantProvider.restaurants!.length <= 0
+                    ? const Center(child: CircularProgressIndicator())
+                    : restaurantProvider.restaurants!.isEmpty
                         ? Center(
                             child: Text(
                             'Not Found',

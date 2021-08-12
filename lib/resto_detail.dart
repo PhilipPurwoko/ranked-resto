@@ -3,26 +3,26 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'database.dart';
 
 class RestoDetail extends StatelessWidget {
-  static const String routeName = 'resto-detail';
   const RestoDetail({Key? key}) : super(key: key);
+  static const String routeName = 'resto-detail';
 
   @override
   Widget build(BuildContext context) {
-    Restaurant restaurant =
-        ModalRoute.of(context)!.settings.arguments as Restaurant;
+    final Restaurant restaurant =
+        ModalRoute.of(context)!.settings.arguments! as Restaurant;
 
     return Scaffold(
       body: SafeArea(
         child: ListView(
           physics: const BouncingScrollPhysics(),
-          children: [
+          children: <Widget>[
             TextButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: Icon(
                 Icons.arrow_back,
                 color: Theme.of(context).primaryColor,
               ),
-              style: ButtonStyle(
+              style: const ButtonStyle(
                 alignment: Alignment.centerLeft,
               ),
               label: Text(
@@ -64,8 +64,8 @@ class RestoDetail extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
-                children: [
-                  Icon(
+                children: <Widget>[
+                  const Icon(
                     Icons.location_on,
                     size: 16,
                   ),
@@ -79,8 +79,8 @@ class RestoDetail extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
-                children: [
-                  Icon(
+                children: <Widget>[
+                  const Icon(
                     Icons.star,
                     size: 16,
                   ),
@@ -111,14 +111,14 @@ class RestoDetail extends StatelessWidget {
                 enableInfiniteScroll: false,
                 height: 120.0,
                 autoPlay: true,
-                autoPlayInterval: Duration(seconds: 15),
+                autoPlayInterval: const Duration(seconds: 15),
               ),
-              items: restaurant.menus.foods.map((Food food) {
+              items: restaurant.menus.foods.map((Meal food) {
                 return Builder(
                   builder: (BuildContext ctx) {
                     return Container(
                       width: MediaQuery.of(ctx).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(8),
@@ -146,14 +146,14 @@ class RestoDetail extends StatelessWidget {
                 enableInfiniteScroll: false,
                 height: 120.0,
                 autoPlay: true,
-                autoPlayInterval: Duration(seconds: 15),
+                autoPlayInterval: const Duration(seconds: 15),
               ),
-              items: restaurant.menus.drinks.map((Drink drink) {
+              items: restaurant.menus.drinks.map((Meal drink) {
                 return Builder(
                   builder: (BuildContext ctx) {
                     return Container(
                       width: MediaQuery.of(ctx).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(8),
@@ -169,7 +169,7 @@ class RestoDetail extends StatelessWidget {
                 );
               }).toList(),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),

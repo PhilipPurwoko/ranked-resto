@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-final theme = ThemeData(
-  primaryColor: Color(0xFF66bb6a),
-  accentColor: Color(0xFF98ee99),
-  primaryColorDark: Color(0xFF338a3e),
-  focusColor: Color(0xFF98ee99),
+final ThemeData theme = ThemeData(
+  primaryColor: const Color(0xFF66bb6a),
+  accentColor: const Color(0xFF98ee99),
+  primaryColorDark: const Color(0xFF338a3e),
+  focusColor: const Color(0xFF98ee99),
   fontFamily: 'Georgia',
   textTheme: const TextTheme(
     headline6: TextStyle(
