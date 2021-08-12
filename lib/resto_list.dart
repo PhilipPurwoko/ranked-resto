@@ -11,7 +11,7 @@ class RestoList extends StatefulWidget {
 }
 
 class _RestoListState extends State<RestoList> {
-  bool _seachMode = false;
+  bool _searchMode = false;
   final TextEditingController _searchController = TextEditingController();
   FocusNode focusNode = FocusNode();
 
@@ -35,94 +35,73 @@ class _RestoListState extends State<RestoList> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
+        appBar: AppBar(
+          leading: _searchMode
+              ? IconButton(
+                  onPressed: () {
+                    _searchController.clear();
+                    restaurantProvider.resetResto();
+                    setState(() {
+                      _searchMode = !_searchMode;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                )
+              : null,
+          title: _searchMode
+              ? TextField(
+                  controller: _searchController,
+                  focusNode: focusNode,
+                  autofocus: true,
+                  cursorColor: const Color(0xFF98ee99),
+                  // style: const TextStyle(color: Color(0xFF98ee99)),
+                  decoration: const InputDecoration(
+                    labelText: 'Search restaurant',
+                    fillColor: Color(0xFF98ee99),
+                    labelStyle: TextStyle(
+                      color: Color(0xFF98ee99),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF98ee99),
+                      ),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF98ee99),
+                      ),
+                    ),
+                  ),
+                  onChanged: (String name) =>
+                      restaurantProvider.searchResto(name),
+                  onSubmitted: (String name) =>
+                      restaurantProvider.searchResto(name),
+                )
+              : const Text('Ranked Resto'),
+          actions: <IconButton>[
+            if (!_searchMode)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _searchMode = !_searchMode;
+                  });
+                },
+                icon: const Icon(Icons.search),
+              ),
+          ],
+        ),
         body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(20),
-                color: Theme.of(context).primaryColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Ranked Resto',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontSize: 24),
+          child: restaurantProvider.restaurants == null
+              ? const Center(child: CircularProgressIndicator())
+              : restaurantProvider.restaurants!.isEmpty
+                  ? const Center(child: Text('Not Found'))
+                  : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: restaurantProvider.restaurants!.length,
+                      itemBuilder: (_, int index) => RestoCard(
+                        restaurantProvider.restaurants![index],
+                      ),
                     ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: _seachMode
-                              ? TextField(
-                                  controller: _searchController,
-                                  focusNode: focusNode,
-                                  autofocus: true,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Search restaurant',
-                                    fillColor: Color(0xFF98ee99),
-                                    labelStyle: TextStyle(
-                                      color: Color(0xFF98ee99),
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xFF98ee99),
-                                      ),
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color(0xFF98ee99),
-                                      ),
-                                    ),
-                                  ),
-                                  onChanged: (String name) =>
-                                      restaurantProvider.searchResto(name),
-                                  onSubmitted: (String name) =>
-                                      restaurantProvider.searchResto(name),
-                                )
-                              : Text(
-                                  'Recomended restaurants for you!',
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            if (_seachMode) {
-                              _searchController.clear();
-                              restaurantProvider.resetResto();
-                            }
-
-                            setState(() {
-                              _seachMode = !_seachMode;
-                            });
-                          },
-                          icon: Icon(_seachMode ? Icons.cancel : Icons.search),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: restaurantProvider.restaurants == null
-                    ? const Center(child: CircularProgressIndicator())
-                    : restaurantProvider.restaurants!.isEmpty
-                        ? Center(
-                            child: Text(
-                            'Not Found',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ))
-                        : ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: restaurantProvider.restaurants!.length,
-                            itemBuilder: (_, int index) => RestoCard(
-                              restaurantProvider.restaurants![index],
-                            ),
-                          ),
-              ),
-            ],
-          ),
         ),
       ),
     );

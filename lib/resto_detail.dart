@@ -12,27 +12,16 @@ class RestoDetail extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments! as Restaurant;
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          restaurant.name,
+          style: Theme.of(context).textTheme.headline6,
+        ),
+      ),
       body: SafeArea(
         child: ListView(
           physics: const BouncingScrollPhysics(),
           children: <Widget>[
-            TextButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(
-                Icons.arrow_back,
-                color: Theme.of(context).primaryColor,
-              ),
-              style: const ButtonStyle(
-                alignment: Alignment.centerLeft,
-              ),
-              label: Text(
-                'Go Back',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
             AspectRatio(
               aspectRatio: 16.0 / 9.0,
               child: Image.network(
@@ -55,24 +44,11 @@ class RestoDetail extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-              child: Text(
-                restaurant.name,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
               child: Row(
                 children: <Widget>[
-                  const Icon(
-                    Icons.location_on,
-                    size: 16,
-                  ),
-                  Text(
-                    restaurant.city,
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  const Icon(Icons.location_on, size: 16),
+                  Text(restaurant.city),
                 ],
               ),
             ),
@@ -80,14 +56,8 @@ class RestoDetail extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: <Widget>[
-                  const Icon(
-                    Icons.star,
-                    size: 16,
-                  ),
-                  Text(
-                    restaurant.rating.toString(),
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                  const Icon(Icons.star, size: 16),
+                  Text(restaurant.rating.toString()),
                 ],
               ),
             ),
@@ -96,7 +66,6 @@ class RestoDetail extends StatelessWidget {
               child: Text(
                 restaurant.description,
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             Padding(
@@ -123,12 +92,7 @@ class RestoDetail extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Center(
-                        child: Text(
-                          food.name,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ),
+                      child: Center(child: Text(food.name)),
                     );
                   },
                 );
@@ -158,12 +122,7 @@ class RestoDetail extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Center(
-                        child: Text(
-                          drink.name,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ),
+                      child: Center(child: Text(drink.name)),
                     );
                   },
                 );

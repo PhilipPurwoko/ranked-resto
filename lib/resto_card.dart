@@ -18,61 +18,37 @@ class RestoCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: AspectRatio(
-              aspectRatio: 16.0 / 9.0,
-              child: Image.network(
-                restaurant.pictureId,
-                fit: BoxFit.cover,
-                loadingBuilder: (
-                  BuildContext _,
-                  Widget img,
-                  ImageChunkEvent? loadingProgress,
-                ) {
-                  return loadingProgress == null
-                      ? img
-                      : Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!,
-                          ),
-                        );
-                },
-              ),
+          leading: AspectRatio(
+            aspectRatio: 1 / 1,
+            child: Image.network(
+              restaurant.pictureId,
+              fit: BoxFit.cover,
+              loadingBuilder: (
+                BuildContext _,
+                Widget img,
+                ImageChunkEvent? loadingProgress,
+              ) {
+                return loadingProgress == null
+                    ? img
+                    : Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes!,
+                        ),
+                      );
+              },
             ),
           ),
-          title: Text(
-            restaurant.name,
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          subtitle: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  const Icon(
-                    Icons.location_on,
-                    size: 14,
-                  ),
-                  Text(
-                    restaurant.city,
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  const Icon(
-                    Icons.star,
-                    size: 14,
-                  ),
-                  Text(
-                    restaurant.rating.toString(),
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ],
-              ),
-            ],
+          title: Text(restaurant.name),
+          subtitle: Text(restaurant.city),
+          trailing: SizedBox(
+            width: 45,
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.star, color: Colors.yellow[600]),
+                Text(restaurant.rating.toString()),
+              ],
+            ),
           ),
         ),
       ),
