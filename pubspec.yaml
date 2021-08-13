@@ -13,6 +13,7 @@ dependencies:
     flutter:
         sdk: flutter
     flutter_riverpod: ^0.14.0+3
+    http: ^0.13.3
 
 dev_dependencies:
     flutter_native_splash: ^1.2.1
@@ -23,5 +24,4 @@ dev_dependencies:
 flutter:
     uses-material-design: true
     assets:
-        - assets/data.json
         - assets/placeholder.png

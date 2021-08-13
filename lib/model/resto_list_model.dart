@@ -7,7 +7,7 @@ class RestoList {
   });
 
   factory RestoList.fromJson(Map<String, dynamic> json) => RestoList(
-        error: json['error'] as bool,
+        error: json['error'].toString() == 'true',
         message: json['message'].toString(),
         count: int.parse(json['count'].toString()),
         restaurants: List<Restaurant>.from(

@@ -2,7 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/provider/resto_list_provider.dart';
-import 'package:rankedresto/widget/resto_card.dart';
+import 'package:rankedresto/widget/resto_list_view.dart';
 
 class RestoList extends StatefulWidget {
   static const String routeName = 'resto-list';
@@ -15,6 +15,10 @@ class _RestoListState extends State<RestoList> {
   bool _fadeTitle = false;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final ChangeNotifierProvider<RestoListProvider> _restoListProvider =
+      ChangeNotifierProvider<RestoListProvider>(
+    (ProviderReference ref) => RestoListProvider(),
+  );
 
   @override
   void dispose() {
@@ -43,36 +47,28 @@ class _RestoListState extends State<RestoList> {
                 controller: _searchController,
                 focusNode: _focusNode,
                 autofocus: true,
-                cursorColor: const Color(0xFF98ee99),
+                cursorColor: Colors.white,
+                style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   labelText: 'Search restaurant',
-                  fillColor: Color(0xFF98ee99),
+                  fillColor: Colors.white,
                   labelStyle: TextStyle(
-                    color: Color(0xFF98ee99),
+                    color: Colors.white,
                   ),
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: Color(0xFF98ee99),
+                      color: Colors.white,
                     ),
                   ),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                      color: Color(0xFF98ee99),
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                // onChanged: (String name) =>
-                //     restaurantProvider.searchResto(name),
-                // onSubmitted: (String name) =>
-                //     restaurantProvider.searchResto(name),
               )
             : AnimatedOpacity(
                 opacity: _fadeTitle ? 0 : 1,
-                onEnd: () {
-                  setState(() {
-                    _searchMode = !_searchMode;
-                  });
-                },
                 duration: const Duration(milliseconds: 300),
                 child: AnimatedTextKit(
                   isRepeatingAnimation: false,
@@ -88,47 +84,19 @@ class _RestoListState extends State<RestoList> {
         actions: <IconButton>[
           if (!_searchMode)
             IconButton(
+              icon: const Icon(Icons.search),
               onPressed: () {
                 setState(() {
                   _fadeTitle = true;
+                  _searchMode = true;
                 });
               },
-              icon: const Icon(Icons.search),
             ),
         ],
       ),
-      body: RestoListWidget(),
-    );
-  }
-}
-
-class RestoListWidget extends ConsumerWidget {
-  RestoListWidget({
-    Key? key,
-  }) : super(key: key);
-
-  final ChangeNotifierProvider<RestoListProvider> _restoListProvider =
-      ChangeNotifierProvider<RestoListProvider>(
-    (ProviderReference ref) => RestoListProvider(),
-  );
-
-  @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final RestoListProvider restoListState =
-        watch<RestoListProvider>(_restoListProvider);
-
-    return SafeArea(
-      child: restoListState.restaurants == null
-          ? const Center(child: CircularProgressIndicator())
-          : restoListState.restaurants!.isEmpty
-              ? const Center(child: Text('Not Found'))
-              : ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: restoListState.restaurants!.length,
-                  itemBuilder: (_, int index) => RestoCard(
-                    restoListState.restaurants![index],
-                  ),
-                ),
+      body: _searchMode
+          ? const Center(child: Text('No Result Found'))
+          : RestoListWidget(_restoListProvider),
     );
   }
 }

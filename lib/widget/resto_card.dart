@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
+import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/screen/resto_detail_screen.dart';
 
 class RestoCard extends StatelessWidget {
@@ -11,8 +12,28 @@ class RestoCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(
-          RestoDetail.routeName,
-          arguments: restaurant,
+          RestoDetailScreen.routeName,
+          arguments: RestaurantDetail(
+            id: restaurant.id,
+            name: restaurant.name,
+            description: restaurant.description,
+            city: restaurant.city,
+            address: restaurant.city,
+            pictureId: restaurant.pictureId,
+            rating: restaurant.rating,
+            categories: <CategoryOrMeal>[CategoryOrMeal(name: 'Test')],
+            menus: Menus(
+              foods: <CategoryOrMeal>[CategoryOrMeal(name: 'Food')],
+              drinks: <CategoryOrMeal>[CategoryOrMeal(name: 'Drink')],
+            ),
+            customerReviews: <CustomerReview>[
+              CustomerReview(
+                name: 'Philip',
+                date: '12-08-2021',
+                review: 'Nice',
+              ),
+            ],
+          ),
         );
       },
       child: Padding(
@@ -24,7 +45,9 @@ class RestoCard extends StatelessWidget {
               tag: restaurant.id,
               child: FadeInImage(
                 placeholder: const AssetImage('assets/placeholder.png'),
-                image: NetworkImage(restaurant.pictureId),
+                image: NetworkImage(
+                  'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                ),
                 fit: BoxFit.cover,
               ),
             ),

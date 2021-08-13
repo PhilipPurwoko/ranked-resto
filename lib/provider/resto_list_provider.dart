@@ -1,32 +1,25 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_list_model.dart';
 
 class RestoListProvider with ChangeNotifier {
-  List<Restaurant>? _restaurant;
+  final List<Restaurant> _restaurant = <Restaurant>[];
 
-  Future<void> loadDatabase() async {
-    final String res = await rootBundle.loadString('assets/data.json');
-    final Map<String, dynamic> data = json.decode(res) as Map<String, dynamic>;
-    _restaurant = RestoList.fromJson(data).restaurants;
-    notifyListeners();
+  Future<String?> loadDatabase() async {
+    try {
+      final Uri url = Uri.parse('https://restaurant-api.dicoding.dev/list');
+      final http.Response res = await http.get(url);
+      final Map<String, dynamic> data =
+          json.decode(res.body) as Map<String, dynamic>;
+      _restaurant.addAll(RestoList.fromJson(data).restaurants);
+    } catch (err) {
+      return Future<String>.error(err.toString());
+    }
   }
 
-  List<Restaurant>? get restaurants {
+  List<Restaurant> get restaurants {
+    if (_restaurant.isEmpty) return <Restaurant>[];
     return _restaurant;
   }
-
-  // void searchResto(String? name) {
-  //   if (name != null) {
-  //     _searchedResto = _restaurant!
-  //         .where((Restaurant restaurant) =>
-  //             restaurant.name.toLowerCase().contains(name))
-  //         .toList();
-  //     notifyListeners();
-  //   } else {
-  //     _searchedResto = _restaurant;
-  //     notifyListeners();
-  //   }
-  // }
 }

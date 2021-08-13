@@ -19,7 +19,7 @@ class RankedResto extends StatelessWidget {
       initialRoute: RestoList.routeName,
       routes: <String, Widget Function(BuildContext)>{
         RestoList.routeName: (_) => RestoList(),
-        RestoDetail.routeName: (_) => const RestoDetail(),
+        RestoDetailScreen.routeName: (_) => const RestoDetailScreen(),
       },
     );
   }

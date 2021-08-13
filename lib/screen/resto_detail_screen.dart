@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 
-class RestoDetail extends StatelessWidget {
-  const RestoDetail({Key? key}) : super(key: key);
+class RestoDetailScreen extends StatelessWidget {
+  const RestoDetailScreen({Key? key}) : super(key: key);
   static const String routeName = 'resto-detail';
 
   @override
   Widget build(BuildContext context) {
-    final Restaurant restaurant =
-        ModalRoute.of(context)!.settings.arguments! as Restaurant;
+    final RestaurantDetail restaurant =
+        ModalRoute.of(context)!.settings.arguments! as RestaurantDetail;
+    final TextStyle? headline6 = Theme.of(context).textTheme.headline6;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           restaurant.name,
-          style: Theme.of(context).textTheme.headline6,
+          style: headline6!.copyWith(color: Colors.white),
         ),
       ),
       body: SafeArea(
@@ -28,7 +29,9 @@ class RestoDetail extends StatelessWidget {
                 tag: restaurant.id,
                 child: FadeInImage(
                   placeholder: const AssetImage('assets/placeholder.png'),
-                  image: NetworkImage(restaurant.pictureId),
+                  image: NetworkImage(
+                    'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -62,7 +65,7 @@ class RestoDetail extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
                 'Foods',
-                style: Theme.of(context).textTheme.headline6,
+                style: headline6,
               ),
             ),
             CarouselSlider(
@@ -79,7 +82,6 @@ class RestoDetail extends StatelessWidget {
                       width: MediaQuery.of(ctx).size.width,
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(child: Text(food.name)),
@@ -92,7 +94,7 @@ class RestoDetail extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(
                 'Drinks',
-                style: Theme.of(context).textTheme.headline6,
+                style: headline6,
               ),
             ),
             CarouselSlider(
@@ -109,7 +111,6 @@ class RestoDetail extends StatelessWidget {
                       width: MediaQuery.of(ctx).size.width,
                       margin: const EdgeInsets.symmetric(horizontal: 5.0),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(child: Text(drink.name)),
