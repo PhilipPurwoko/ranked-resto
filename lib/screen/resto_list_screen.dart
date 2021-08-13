@@ -20,6 +20,24 @@ class _RestoListState extends State<RestoList> {
     (ProviderReference ref) => RestoListProvider(),
   );
 
+  void showError(BuildContext ctx, String error) {
+    showDialog(
+      context: ctx,
+      builder: (BuildContext bc) => AlertDialog(
+        title: const Text('An Error Occured'),
+        content: Text(error),
+        actions: <TextButton>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(bc).pop();
+            },
+            child: const Text('Close'),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -102,29 +120,45 @@ class _RestoListState extends State<RestoList> {
           body: _searchMode
               ? const Center(child: Text('No Result Found'))
               : SafeArea(
-                  child: FutureBuilder<String?>(
-                    future: restoListState.loadDatabase(),
-                    builder: (_, AsyncSnapshot<String?> snapshot) {
-                      if (snapshot.hasError) {
-                        return const Center(
-                          child: Text(
-                            'Loading Error, check your network connection',
-                          ),
-                        );
-                      } else if (restoListState.restaurants.isNotEmpty) {
-                        return restoListState.restaurants.isEmpty
-                            ? const Center(child: Text('Not Found'))
-                            : ListView.builder(
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: restoListState.restaurants.length,
-                                itemBuilder: (_, int index) => RestoCard(
-                                  restoListState.restaurants[index],
-                                ),
-                              );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      try {
+                        await restoListState.loadDatabase();
+                      } catch (_) {
+                        showError(context, 'Check your network connection');
                       }
                     },
+                    child: FutureBuilder<String?>(
+                      future: restoListState.loadDatabase(),
+                      builder: (_, AsyncSnapshot<String?> snapshot) {
+                        if (snapshot.hasError) {
+                          return ListView(
+                            children: const <Padding>[
+                              Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  'Loading Error, please check your network connection. Pull down to refresh',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (restoListState.restaurants.isNotEmpty) {
+                          return restoListState.restaurants.isEmpty
+                              ? const Center(child: Text('Not Found'))
+                              : ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: restoListState.restaurants.length,
+                                  itemBuilder: (_, int index) => RestoCard(
+                                    restoListState.restaurants[index],
+                                  ),
+                                );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
                   ),
                 ),
         );

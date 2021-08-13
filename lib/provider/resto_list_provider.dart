@@ -13,8 +13,9 @@ class RestoListProvider with ChangeNotifier {
       final Map<String, dynamic> data =
           json.decode(res.body) as Map<String, dynamic>;
       _restaurant = RestoList.fromJson(data).restaurants;
+      notifyListeners();
     } catch (err) {
-      if (_restaurant.isEmpty) return Future<String>.error(err.toString());
+      if (_restaurant.isEmpty) return Future<String>.error(err);
     }
   }
 

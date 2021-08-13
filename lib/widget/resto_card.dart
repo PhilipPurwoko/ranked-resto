@@ -44,16 +44,34 @@ class RestoCard extends StatelessWidget {
             child: Hero(
               tag: restaurant.id,
               child: FadeInImage(
+                fit: BoxFit.cover,
                 placeholder: const AssetImage('assets/placeholder.png'),
+                imageErrorBuilder: (
+                  BuildContext _,
+                  Object error,
+                  StackTrace? stackTrace,
+                ) =>
+                    Image.asset(
+                  'assets/placeholder.png',
+                  fit: BoxFit.fitWidth,
+                ),
                 image: NetworkImage(
                   'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
                 ),
-                fit: BoxFit.cover,
               ),
             ),
           ),
           title: Text(restaurant.name),
-          subtitle: Text(restaurant.city),
+          subtitle: Row(
+            children: <Widget>[
+              const Icon(
+                Icons.location_on,
+                color: Colors.grey,
+                size: 16,
+              ),
+              Text(restaurant.city),
+            ],
+          ),
           trailing: SizedBox(
             width: 45,
             child: Row(
