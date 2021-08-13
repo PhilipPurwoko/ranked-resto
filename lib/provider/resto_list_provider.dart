@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_list_model.dart';
 
 class RestoListProvider with ChangeNotifier {
-  final List<Restaurant> _restaurant = <Restaurant>[];
+  List<Restaurant> _restaurant = <Restaurant>[];
 
   Future<String?> loadDatabase() async {
     try {
@@ -12,9 +12,9 @@ class RestoListProvider with ChangeNotifier {
       final http.Response res = await http.get(url);
       final Map<String, dynamic> data =
           json.decode(res.body) as Map<String, dynamic>;
-      _restaurant.addAll(RestoList.fromJson(data).restaurants);
+      _restaurant = RestoList.fromJson(data).restaurants;
     } catch (err) {
-      return Future<String>.error(err.toString());
+      if (_restaurant.isEmpty) return Future<String>.error(err.toString());
     }
   }
 
