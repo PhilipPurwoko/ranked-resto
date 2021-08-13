@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'database.dart';
+import 'package:rankedresto/model/resto_detail_model.dart';
 
 class RestoDetail extends StatelessWidget {
   const RestoDetail({Key? key}) : super(key: key);
@@ -72,7 +72,7 @@ class RestoDetail extends StatelessWidget {
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 15),
               ),
-              items: restaurant.menus.foods.map((Meal food) {
+              items: restaurant.menus.foods.map((CategoryOrMeal food) {
                 return Builder(
                   builder: (BuildContext ctx) {
                     return Container(
@@ -102,7 +102,7 @@ class RestoDetail extends StatelessWidget {
                 autoPlay: true,
                 autoPlayInterval: const Duration(seconds: 15),
               ),
-              items: restaurant.menus.drinks.map((Meal drink) {
+              items: restaurant.menus.drinks.map((CategoryOrMeal drink) {
                 return Builder(
                   builder: (BuildContext ctx) {
                     return Container(

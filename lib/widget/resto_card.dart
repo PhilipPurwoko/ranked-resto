@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'database.dart';
-import 'resto_detail.dart';
+import 'package:rankedresto/model/resto_list_model.dart';
+import 'package:rankedresto/screen/resto_detail_screen.dart';
 
 class RestoCard extends StatelessWidget {
   const RestoCard(this.restaurant, {Key? key}) : super(key: key);

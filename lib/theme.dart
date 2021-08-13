@@ -5,7 +5,6 @@ final ThemeData theme = ThemeData(
   accentColor: const Color(0xFF98ee99),
   primaryColorDark: const Color(0xFF338a3e),
   focusColor: const Color(0xFF98ee99),
-  // fontFamily: 'Georgia',
   textTheme: const TextTheme(
     headline6: TextStyle(
       fontSize: 20.0,

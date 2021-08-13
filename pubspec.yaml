@@ -1,27 +1,27 @@
 name: rankedresto
 description: Restaurant catalog app
-publish_to: 'none'
+publish_to: "none"
 version: 2.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+    sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  animated_text_kit: ^4.2.1
-  carousel_slider: ^4.0.0
-  cupertino_icons: ^1.0.2
-  flutter:
-    sdk: flutter
-  provider: ^5.0.0
+    animated_text_kit: ^4.2.1
+    carousel_slider: ^4.0.0
+    cupertino_icons: ^1.0.2
+    flutter:
+        sdk: flutter
+    flutter_riverpod: ^0.14.0+3
 
 dev_dependencies:
-  flutter_native_splash: ^1.2.1
-  flutter_test:
-    sdk: flutter
-  lint: ^1.5.3
+    flutter_native_splash: ^1.2.1
+    flutter_test:
+        sdk: flutter
+    lint: ^1.5.3
 
 flutter:
-  uses-material-design: true
-  assets:
-    - assets/data.json
-    - assets/placeholder.png
+    uses-material-design: true
+    assets:
+        - assets/data.json
+        - assets/placeholder.png
