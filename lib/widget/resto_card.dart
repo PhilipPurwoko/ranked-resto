@@ -18,21 +18,8 @@ class RestoCard extends StatelessWidget {
             name: restaurant.name,
             description: restaurant.description,
             city: restaurant.city,
-            address: restaurant.city,
             pictureId: restaurant.pictureId,
             rating: restaurant.rating,
-            categories: <CategoryOrMeal>[CategoryOrMeal(name: 'Test')],
-            menus: Menus(
-              foods: <CategoryOrMeal>[CategoryOrMeal(name: 'Food')],
-              drinks: <CategoryOrMeal>[CategoryOrMeal(name: 'Drink')],
-            ),
-            customerReviews: <CustomerReview>[
-              CustomerReview(
-                name: 'Philip',
-                date: '12-08-2021',
-                review: 'Nice',
-              ),
-            ],
           ),
         );
       },

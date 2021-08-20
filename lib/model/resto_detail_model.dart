@@ -1,3 +1,14 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<RestaurantDetail>? getRestaurantByID(String id) async {
+  final Uri url = Uri.parse('https://restaurant-api.dicoding.dev//detail/$id');
+  final http.Response res = await http.get(url);
+  final Map<String, dynamic> data =
+      json.decode(res.body) as Map<String, dynamic>;
+  return RestoDetail.fromJson(data).restaurant;
+}
+
 class RestoDetail {
   RestoDetail({
     required this.error,
@@ -8,8 +19,8 @@ class RestoDetail {
   factory RestoDetail.fromJson(Map<String, dynamic> json) => RestoDetail(
         error: json['error'] as bool,
         message: json['message'].toString(),
-        restaurant:
-            RestaurantDetail.fromJson(json['Detail'] as Map<String, dynamic>),
+        restaurant: RestaurantDetail.fromJson(
+            json['restaurant'] as Map<String, dynamic>),
       );
 
   bool error;
@@ -29,12 +40,12 @@ class RestaurantDetail {
     required this.name,
     required this.description,
     required this.city,
-    required this.address,
-    required this.pictureId,
-    required this.categories,
-    required this.menus,
     required this.rating,
-    required this.customerReviews,
+    required this.pictureId,
+    this.address,
+    this.categories,
+    this.menus,
+    this.customerReviews,
   });
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
@@ -63,12 +74,12 @@ class RestaurantDetail {
   String name;
   String description;
   String city;
-  String address;
   String pictureId;
-  List<CategoryOrMeal> categories;
-  Menus menus;
   double rating;
-  List<CustomerReview> customerReviews;
+  String? address;
+  Menus? menus;
+  List<CategoryOrMeal>? categories;
+  List<CustomerReview>? customerReviews;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
@@ -77,12 +88,16 @@ class RestaurantDetail {
         'city': city,
         'address': address,
         'pictureId': pictureId,
-        'categories': List<dynamic>.from(
-            categories.map((CategoryOrMeal x) => x.toJson())),
-        'menus': menus.toJson(),
+        'categories': categories != null
+            ? List<dynamic>.from(
+                categories!.map((CategoryOrMeal x) => x.toJson()))
+            : const Iterable<dynamic>.empty(),
+        'menus': menus?.toJson() ?? '',
         'rating': rating,
-        'customerReviews': List<dynamic>.from(
-            customerReviews.map((CustomerReview x) => x.toJson())),
+        'customerReviews': customerReviews != null
+            ? List<dynamic>.from(
+                customerReviews!.map((CustomerReview x) => x.toJson()))
+            : const Iterable<dynamic>.empty(),
       };
 }
 

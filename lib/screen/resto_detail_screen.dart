@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
+import 'package:rankedresto/widget/carousel_display.dart';
+import 'package:rankedresto/widget/review_card.dart';
+import 'package:rankedresto/widget/shimmer.dart';
 
 class RestoDetailScreen extends StatelessWidget {
   const RestoDetailScreen({Key? key}) : super(key: key);
@@ -20,108 +23,133 @@ class RestoDetailScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 16.0 / 9.0,
-              child: Hero(
-                tag: restaurant.id,
-                child: FadeInImage(
-                  placeholder: const AssetImage('assets/placeholder.png'),
-                  image: NetworkImage(
-                    'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Row(
-                children: <Widget>[
-                  const Icon(Icons.location_on, size: 16),
-                  Text(restaurant.city),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: <Widget>[
-                  const Icon(Icons.star, size: 16),
-                  Text(restaurant.rating.toString()),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                restaurant.description,
-                textAlign: TextAlign.justify,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Text(
-                'Foods',
-                style: headline6,
-              ),
-            ),
-            CarouselSlider(
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
-                height: 120.0,
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 15),
-              ),
-              items: restaurant.menus.foods.map((CategoryOrMeal food) {
-                return Builder(
-                  builder: (BuildContext ctx) {
-                    return Container(
-                      width: MediaQuery.of(ctx).size.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
+        child: FutureBuilder<RestaurantDetail>(
+            future: getRestaurantByID(restaurant.id),
+            builder: (
+              BuildContext _,
+              AsyncSnapshot<RestaurantDetail> snapshot,
+            ) {
+              if (snapshot.hasData) {
+                return ListView(
+                  physics: const BouncingScrollPhysics(),
+                  children: <Widget>[
+                    AspectRatio(
+                      aspectRatio: 16.0 / 9.0,
+                      child: Hero(
+                        tag: restaurant.id,
+                        child: FadeInImage(
+                          placeholder:
+                              const AssetImage('assets/placeholder.png'),
+                          image: NetworkImage(
+                            'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Center(child: Text(food.name)),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Text(
-                'Drinks',
-                style: headline6,
-              ),
-            ),
-            CarouselSlider(
-              options: CarouselOptions(
-                enableInfiniteScroll: false,
-                height: 120.0,
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 15),
-              ),
-              items: restaurant.menus.drinks.map((CategoryOrMeal drink) {
-                return Builder(
-                  builder: (BuildContext ctx) {
-                    return Container(
-                      width: MediaQuery.of(ctx).size.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 20),
+                      child: Row(
+                        children: <Widget>[
+                          const Icon(Icons.location_on, size: 16),
+                          Text(
+                            '${snapshot.data!.address}, ${snapshot.data!.city}',
+                          ),
+                        ],
                       ),
-                      child: Center(child: Text(drink.name)),
-                    );
-                  },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: <Widget>[
+                          RatingBar.builder(
+                            itemSize: 24,
+                            allowHalfRating: true,
+                            ignoreGestures: true,
+                            initialRating: snapshot.data!.rating,
+                            onRatingUpdate: (_) {},
+                            itemBuilder: (_, __) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                          ),
+                          Text(
+                            '(${snapshot.data!.rating.toString()}) (${snapshot.data!.customerReviews!.length.toString()})',
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: snapshot.data!.categories!
+                            .map<Padding>((CategoryOrMeal e) => Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Chip(label: Text(e.name)),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Text(
+                        snapshot.data!.description,
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      child: Text(
+                        'Foods',
+                        style: headline6,
+                      ),
+                    ),
+                    CarouselDisplay(
+                      snapshot.data!.menus!.foods,
+                      'assets/food.jpg',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      child: Text(
+                        'Drinks',
+                        style: headline6,
+                      ),
+                    ),
+                    CarouselDisplay(
+                      snapshot.data!.menus!.drinks,
+                      'assets/drink.jpg',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      child: Text(
+                        'Reviews',
+                        style: headline6,
+                      ),
+                    ),
+                    ...snapshot.data!.customerReviews!
+                        .map<ReviewCard>((CustomerReview e) => ReviewCard(e))
+                        .toList(),
+                    const SizedBox(height: 20),
+                  ],
                 );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
+              } else {
+                return ListView(
+                  children: <Widget>[
+                    imageShimmer,
+                    textShimmer,
+                    textShimmer,
+                    imageShimmer,
+                    textShimmer,
+                    listShimmer,
+                    listShimmer,
+                  ],
+                );
+              }
+            }),
       ),
     );
   }

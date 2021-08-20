@@ -12,7 +12,9 @@ class RestoListProvider with ChangeNotifier {
       final http.Response res = await http.get(url);
       final Map<String, dynamic> data =
           json.decode(res.body) as Map<String, dynamic>;
-      _restaurant = RestoList.fromJson(data).restaurants;
+      final RestoList restodata = RestoList.fromJson(data);
+      if (restodata.error) throw Exception(restodata.message);
+      _restaurant = restodata.restaurants;
       notifyListeners();
     } catch (err) {
       if (_restaurant.isEmpty) return Future<String>.error(err);
