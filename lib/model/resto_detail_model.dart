@@ -1,12 +1,31 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+class CustomerReviewResponse {
+  CustomerReviewResponse({
+    required this.error,
+    required this.message,
+    required this.customerReviews,
+  });
 
-Future<RestaurantDetail>? getRestaurantByID(String id) async {
-  final Uri url = Uri.parse('https://restaurant-api.dicoding.dev/detail/$id');
-  final http.Response res = await http.get(url);
-  final Map<String, dynamic> data =
-      json.decode(res.body) as Map<String, dynamic>;
-  return RestoDetail.fromJson(data).restaurant;
+  factory CustomerReviewResponse.fromJson(Map<String, dynamic> json) =>
+      CustomerReviewResponse(
+        error: json['error'].toString() == 'true',
+        message: json['message'].toString(),
+        customerReviews: List<CustomerReview>.from(
+          json['customerReviews'].map(
+            (dynamic x) => CustomerReview.fromJson(x as Map<String, dynamic>),
+          ) as Iterable<dynamic>,
+        ),
+      );
+
+  final bool error;
+  final String message;
+  final List<CustomerReview> customerReviews;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'error': error,
+        'message': message,
+        'customerReviews': List<dynamic>.from(
+            customerReviews.map((CustomerReview x) => x.toJson())),
+      };
 }
 
 class RestoDetail {
