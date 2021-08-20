@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<RestaurantDetail>? getRestaurantByID(String id) async {
-  final Uri url = Uri.parse('https://restaurant-api.dicoding.dev//detail/$id');
+  final Uri url = Uri.parse('https://restaurant-api.dicoding.dev/detail/$id');
   final http.Response res = await http.get(url);
   final Map<String, dynamic> data =
       json.decode(res.body) as Map<String, dynamic>;

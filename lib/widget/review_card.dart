@@ -14,7 +14,13 @@ class ReviewCard extends StatelessWidget {
         children: <Widget>[
           Text(review.name),
           const Spacer(),
-          Text(review.date),
+          Text(
+            review.date,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
         ],
       ),
       subtitle: Text(review.review),

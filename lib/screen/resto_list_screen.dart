@@ -1,8 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rankedresto/model/resto_list_model.dart';
+import 'package:rankedresto/model/searched_resto.dart';
 import 'package:rankedresto/provider/resto_list_provider.dart';
 import 'package:rankedresto/widget/resto_card.dart';
+import 'package:rankedresto/widget/shimmer.dart';
 
 class RestoList extends StatefulWidget {
   static const String routeName = 'resto-list';
@@ -13,6 +16,8 @@ class RestoList extends StatefulWidget {
 class _RestoListState extends State<RestoList> {
   bool _searchMode = false;
   bool _fadeTitle = false;
+  bool _searching = false;
+  List<Restaurant>? searchedRestaurant;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   final ChangeNotifierProvider<RestoListProvider> _restoListProvider =
@@ -60,6 +65,8 @@ class _RestoListState extends State<RestoList> {
                       setState(() {
                         _searchMode = false;
                         _fadeTitle = false;
+                        _searching = false;
+                        searchedRestaurant = null;
                       });
                     },
                     icon: const Icon(Icons.arrow_back),
@@ -72,6 +79,7 @@ class _RestoListState extends State<RestoList> {
                     autofocus: true,
                     cursorColor: Colors.white,
                     style: const TextStyle(color: Colors.white),
+                    textInputAction: TextInputAction.search,
                     decoration: const InputDecoration(
                       labelText: 'Search restaurant',
                       fillColor: Colors.white,
@@ -89,6 +97,17 @@ class _RestoListState extends State<RestoList> {
                         ),
                       ),
                     ),
+                    onSubmitted: (String keyword) {
+                      setState(() {
+                        _searching = true;
+                      });
+                      searchRestaurant(keyword).then((List<Restaurant> r) {
+                        setState(() {
+                          searchedRestaurant = r;
+                          _searching = false;
+                        });
+                      });
+                    },
                   )
                 : AnimatedOpacity(
                     opacity: _fadeTitle ? 0 : 1,
@@ -118,7 +137,19 @@ class _RestoListState extends State<RestoList> {
             ],
           ),
           body: _searchMode
-              ? const Center(child: Text('No Result Found'))
+              ? _searching
+                  ? listShimmer
+                  : searchedRestaurant == null
+                      ? const Center(child: Text('No Result Found'))
+                      : searchedRestaurant!.isEmpty
+                          ? const Center(child: Text('No Result Found'))
+                          : ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: searchedRestaurant!.length,
+                              itemBuilder: (_, int index) => RestoCard(
+                                searchedRestaurant![index],
+                              ),
+                            )
               : SafeArea(
                   child: RefreshIndicator(
                     onRefresh: () async {
@@ -154,8 +185,15 @@ class _RestoListState extends State<RestoList> {
                                   ),
                                 );
                         } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return ListView(
+                            children: <Widget>[
+                              listShimmer,
+                              listShimmer,
+                              listShimmer,
+                              listShimmer,
+                              listShimmer,
+                            ],
+                          );
                         }
                       },
                     ),
