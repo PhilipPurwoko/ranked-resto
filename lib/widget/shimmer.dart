@@ -29,7 +29,7 @@ Shimmer imageShimmer = toShimmer(
   ),
 );
 
-Shimmer listShimmer = toShimmer(
+Shimmer listTileShimmer = toShimmer(
   ListTile(
     leading: CircleAvatar(
       backgroundColor: _base,

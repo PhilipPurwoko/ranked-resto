@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_list_model.dart';
 
-class RestoListProvider with ChangeNotifier {
+class ListProvider with ChangeNotifier {
   List<Restaurant> _restaurant = <Restaurant>[];
 
-  Future<String?> loadDatabase() async {
+  Future<String?> fetchRestaurants() async {
     try {
       final Uri url = Uri.parse('https://restaurant-api.dicoding.dev/list');
       final http.Response res = await http.get(url);

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
 import 'package:rankedresto/model/searched_resto.dart';
-import 'package:rankedresto/provider/resto_list_provider.dart';
+import 'package:rankedresto/provider/list_provider.dart';
+import 'package:rankedresto/util/error_dialog.dart';
 import 'package:rankedresto/widget/resto_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
 
@@ -17,31 +18,13 @@ class _RestoListState extends State<RestoList> {
   bool _searchMode = false;
   bool _fadeTitle = false;
   bool _searching = false;
-  List<Restaurant>? searchedRestaurant;
+  List<Restaurant> searchedRestaurant = <Restaurant>[];
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  final ChangeNotifierProvider<RestoListProvider> _restoListProvider =
-      ChangeNotifierProvider<RestoListProvider>(
-    (ProviderReference ref) => RestoListProvider(),
+  final ChangeNotifierProvider<ListProvider> _listProvider =
+      ChangeNotifierProvider<ListProvider>(
+    (ProviderReference ref) => ListProvider(),
   );
-
-  void showError(BuildContext ctx, String error) {
-    showDialog(
-      context: ctx,
-      builder: (BuildContext bc) => AlertDialog(
-        title: const Text('An Error Occured'),
-        content: Text(error),
-        actions: <TextButton>[
-          TextButton(
-            onPressed: () {
-              Navigator.of(bc).pop();
-            },
-            child: const Text('Close'),
-          )
-        ],
-      ),
-    );
-  }
 
   @override
   void dispose() {
@@ -53,75 +36,83 @@ class _RestoListState extends State<RestoList> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext ctx, ScopedReader watch, _) {
-        final RestoListProvider restoListState =
-            watch<RestoListProvider>(_restoListProvider);
+        final ListProvider listState = watch<ListProvider>(_listProvider);
 
+        final Widget searchedRestaurantList = _searching
+            ? listTileShimmer
+            : searchedRestaurant.isEmpty
+                ? const Center(child: Text('No Result Found'))
+                : ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: searchedRestaurant.length,
+                    itemBuilder: (_, int index) => RestoCard(
+                      searchedRestaurant[index],
+                    ),
+                  );
+
+        final TextField searchBar = TextField(
+          autofocus: true,
+          controller: _searchController,
+          focusNode: _focusNode,
+          cursorColor: Colors.white,
+          textInputAction: TextInputAction.search,
+          style: const TextStyle(color: Colors.white),
+          decoration: const InputDecoration(
+            labelText: 'Search restaurant',
+            fillColor: Colors.white,
+            labelStyle: TextStyle(color: Colors.white),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+          ),
+          onSubmitted: (String keyword) {
+            setState(() {
+              _searching = true;
+            });
+            searchRestaurant(keyword).then((List<Restaurant> r) {
+              setState(() {
+                searchedRestaurant = r;
+                _searching = false;
+              });
+            }).catchError((_) {
+              showError(context, 'Failed to search restaurant');
+            });
+          },
+        );
+
+        final AnimatedOpacity appTitle = AnimatedOpacity(
+          opacity: _fadeTitle ? 0 : 1,
+          duration: const Duration(milliseconds: 300),
+          child: AnimatedTextKit(
+            isRepeatingAnimation: false,
+            displayFullTextOnTap: true,
+            animatedTexts: <TypewriterAnimatedText>[
+              TypewriterAnimatedText(
+                'Ranked Resto',
+                speed: const Duration(milliseconds: 100),
+              ),
+            ],
+          ),
+        );
         return Scaffold(
           appBar: AppBar(
-            leading: _searchMode
-                ? IconButton(
+            title: _searchMode ? searchBar : appTitle,
+            leading: !_searchMode
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.arrow_back),
                     onPressed: () {
                       _searchController.clear();
                       setState(() {
                         _searchMode = false;
                         _fadeTitle = false;
                         _searching = false;
-                        searchedRestaurant = null;
+                        searchedRestaurant.clear();
                       });
                     },
-                    icon: const Icon(Icons.arrow_back),
-                  )
-                : null,
-            title: _searchMode
-                ? TextField(
-                    controller: _searchController,
-                    focusNode: _focusNode,
-                    autofocus: true,
-                    cursorColor: Colors.white,
-                    style: const TextStyle(color: Colors.white),
-                    textInputAction: TextInputAction.search,
-                    decoration: const InputDecoration(
-                      labelText: 'Search restaurant',
-                      fillColor: Colors.white,
-                      labelStyle: TextStyle(
-                        color: Colors.white,
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    onSubmitted: (String keyword) {
-                      setState(() {
-                        _searching = true;
-                      });
-                      searchRestaurant(keyword).then((List<Restaurant> r) {
-                        setState(() {
-                          searchedRestaurant = r;
-                          _searching = false;
-                        });
-                      });
-                    },
-                  )
-                : AnimatedOpacity(
-                    opacity: _fadeTitle ? 0 : 1,
-                    duration: const Duration(milliseconds: 300),
-                    child: AnimatedTextKit(
-                      isRepeatingAnimation: false,
-                      displayFullTextOnTap: true,
-                      animatedTexts: <TypewriterAnimatedText>[
-                        TypewriterAnimatedText(
-                          'Ranked Resto',
-                          speed: const Duration(milliseconds: 100),
-                        ),
-                      ],
-                    ),
                   ),
             actions: <IconButton>[
               if (!_searchMode)
@@ -137,30 +128,18 @@ class _RestoListState extends State<RestoList> {
             ],
           ),
           body: _searchMode
-              ? _searching
-                  ? listShimmer
-                  : searchedRestaurant == null
-                      ? const Center(child: Text('No Result Found'))
-                      : searchedRestaurant!.isEmpty
-                          ? const Center(child: Text('No Result Found'))
-                          : ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: searchedRestaurant!.length,
-                              itemBuilder: (_, int index) => RestoCard(
-                                searchedRestaurant![index],
-                              ),
-                            )
+              ? searchedRestaurantList
               : SafeArea(
                   child: RefreshIndicator(
                     onRefresh: () async {
                       try {
-                        await restoListState.loadDatabase();
+                        await listState.fetchRestaurants();
                       } catch (_) {
-                        showError(context, 'Check your network connection');
+                        showError(context, 'Failed to load data');
                       }
                     },
                     child: FutureBuilder<String?>(
-                      future: restoListState.loadDatabase(),
+                      future: listState.fetchRestaurants(),
                       builder: (_, AsyncSnapshot<String?> snapshot) {
                         if (snapshot.hasError) {
                           return ListView(
@@ -174,24 +153,22 @@ class _RestoListState extends State<RestoList> {
                               ),
                             ],
                           );
-                        } else if (restoListState.restaurants.isNotEmpty) {
-                          return restoListState.restaurants.isEmpty
-                              ? const Center(child: Text('Not Found'))
-                              : ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  itemCount: restoListState.restaurants.length,
-                                  itemBuilder: (_, int index) => RestoCard(
-                                    restoListState.restaurants[index],
-                                  ),
-                                );
+                        } else if (listState.restaurants.isNotEmpty) {
+                          return ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: listState.restaurants.length,
+                            itemBuilder: (_, int index) => RestoCard(
+                              listState.restaurants[index],
+                            ),
+                          );
                         } else {
                           return ListView(
                             children: <Widget>[
-                              listShimmer,
-                              listShimmer,
-                              listShimmer,
-                              listShimmer,
-                              listShimmer,
+                              listTileShimmer,
+                              listTileShimmer,
+                              listTileShimmer,
+                              listTileShimmer,
+                              listTileShimmer,
                             ],
                           );
                         }
