@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 
 class CarouselCard extends StatelessWidget {
-  const CarouselCard(this.name, this.image, {Key? key}) : super(key: key);
+  const CarouselCard(
+    this.name,
+    this.image, {
+    this.useNetwork = false,
+    this.subtitle,
+    this.trailing,
+    Key? key,
+  }) : super(key: key);
+
   final String name;
   final String image;
+  final bool useNetwork;
+  final Widget? subtitle;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +26,16 @@ class CarouselCard extends StatelessWidget {
             footer: GridTileBar(
               backgroundColor: Colors.black54,
               title: Text(name),
+              subtitle: subtitle,
+              trailing: trailing,
             ),
-            child: Image.asset(image, fit: BoxFit.cover),
+            child: !useNetwork
+                ? Image.asset(image, fit: BoxFit.cover)
+                : FadeInImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(image),
+                    placeholder: const AssetImage('assets/placeholder.png'),
+                  ),
           ),
         ),
       ],

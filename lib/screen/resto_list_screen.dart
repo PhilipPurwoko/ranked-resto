@@ -7,6 +7,7 @@ import 'package:rankedresto/provider/list_provider.dart';
 import 'package:rankedresto/util/error_dialog.dart';
 import 'package:rankedresto/widget/resto_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
+import 'package:rankedresto/widget/top_resto_card.dart';
 
 class RestoList extends StatefulWidget {
   static const String routeName = 'resto-list';
@@ -154,12 +155,28 @@ class _RestoListState extends State<RestoList> {
                             ],
                           );
                         } else if (listState.restaurants.isNotEmpty) {
+                          final List<Widget> restaurantsWidget = listState
+                              .restaurants
+                              .map<Widget>((Restaurant r) => RestoCard(r))
+                              .toList();
+
+                          final List<Restaurant> sortedRestaurant =
+                              listState.restaurants;
+                          sortedRestaurant.sort((Restaurant a, Restaurant b) =>
+                              a.rating.compareTo(b.rating));
+
+                          restaurantsWidget.insert(
+                            0,
+                            TopResto(
+                              context,
+                              sortedRestaurant.reversed.toList().sublist(0, 5),
+                            ),
+                          );
+
                           return ListView.builder(
                             physics: const BouncingScrollPhysics(),
-                            itemCount: listState.restaurants.length,
-                            itemBuilder: (_, int index) => RestoCard(
-                              listState.restaurants[index],
-                            ),
+                            itemCount: listState.restaurants.length + 1,
+                            itemBuilder: (_, int i) => restaurantsWidget[i],
                           );
                         } else {
                           return ListView(

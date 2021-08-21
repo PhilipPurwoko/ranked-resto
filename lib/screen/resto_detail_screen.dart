@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/provider/detail_provider.dart';
 import 'package:rankedresto/util/error_dialog.dart';
 import 'package:rankedresto/widget/carousel_display.dart';
+import 'package:rankedresto/widget/rating_bar.dart';
 import 'package:rankedresto/widget/review_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
 
@@ -96,7 +96,7 @@ class _RestoDetailScreenState extends State<RestoDetailScreen> {
                                 'assets/placeholder.png',
                               ),
                               image: NetworkImage(
-                                'https://restaurant-api.dicoding.dev/images/medium/${passedRestaurantData.pictureId}',
+                                passedRestaurantData.pictureId,
                               ),
                             ),
                           ),
@@ -117,17 +117,7 @@ class _RestoDetailScreenState extends State<RestoDetailScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: <Widget>[
-                            RatingBar.builder(
-                              itemSize: 24,
-                              allowHalfRating: true,
-                              ignoreGestures: true,
-                              initialRating: snapshot.data!.rating,
-                              onRatingUpdate: (_) {},
-                              itemBuilder: (_, __) => const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                            ),
+                            CustomRatingBar(snapshot.data!.rating),
                             Text(
                               '(${snapshot.data!.rating.toString()}) (${snapshot.data!.customerReviews!.length.toString()})',
                             ),
@@ -138,9 +128,10 @@ class _RestoDetailScreenState extends State<RestoDetailScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: snapshot.data!.categories!
-                              .map<Chip>((CategoryOrMeal category) => Chip(
+                              .map<Padding>((CategoryOrMeal category) =>
+                                  Padding(
                                     padding: const EdgeInsets.only(right: 8.0),
-                                    label: Text(category.name),
+                                    child: Chip(label: Text(category.name)),
                                   ))
                               .toList(),
                         ),

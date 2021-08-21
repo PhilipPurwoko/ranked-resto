@@ -43,7 +43,7 @@ class RestoCard extends StatelessWidget {
                   fit: BoxFit.fitWidth,
                 ),
                 image: NetworkImage(
-                  'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                  restaurant.pictureId,
                 ),
               ),
             ),
