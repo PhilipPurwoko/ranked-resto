@@ -225,8 +225,11 @@ class _RestoDetailScreenState extends State<RestoDetailScreen> {
                   );
                 } else if (snapshot.hasError) {
                   return const Center(
-                    child: Text(
-                      'Failed to load data. Please check your network connection',
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text(
+                        'Failed to load data. Please check your network connection',
+                      ),
                     ),
                   );
                 } else {

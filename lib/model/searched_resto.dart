@@ -3,12 +3,16 @@ import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_list_model.dart';
 
 Future<List<Restaurant>> searchRestaurant(String keyword) async {
-  final Uri url =
-      Uri.parse('https://restaurant-api.dicoding.dev/search?q=$keyword');
-  final http.Response res = await http.get(url);
-  final Map<String, dynamic> data =
-      json.decode(res.body) as Map<String, dynamic>;
-  return SearchedRestaurant.fromJson(data).restaurants;
+  try {
+    final Uri url =
+        Uri.parse('https://restaurant-api.dicoding.dev/search?q=$keyword');
+    final http.Response res = await http.get(url);
+    final Map<String, dynamic> data =
+        json.decode(res.body) as Map<String, dynamic>;
+    return SearchedRestaurant.fromJson(data).restaurants;
+  } catch (e) {
+    throw e.toString();
+  }
 }
 
 class SearchedRestaurant {

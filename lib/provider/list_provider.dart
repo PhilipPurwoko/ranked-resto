@@ -16,8 +16,8 @@ class ListProvider with ChangeNotifier {
       if (restodata.error) throw Exception(restodata.message);
       _restaurant = restodata.restaurants;
       notifyListeners();
-    } catch (err) {
-      if (_restaurant.isEmpty) return Future<String>.error(err);
+    } catch (e) {
+      if (_restaurant.isEmpty) return Future<String>.error(e.toString());
     }
   }
 

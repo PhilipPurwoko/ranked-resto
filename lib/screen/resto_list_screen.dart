@@ -58,14 +58,27 @@ class _RestoListState extends State<RestoList> {
           cursorColor: Colors.white,
           textInputAction: TextInputAction.search,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            prefixIcon: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () {
+                _searchController.clear();
+                setState(() {
+                  _searchMode = false;
+                  _fadeTitle = false;
+                  _searching = false;
+                  searchedRestaurant.clear();
+                });
+              },
+            ),
             labelText: 'Search restaurant',
             fillColor: Colors.white,
-            labelStyle: TextStyle(color: Colors.white),
-            focusedBorder: UnderlineInputBorder(
+            labelStyle: const TextStyle(color: Colors.white),
+            focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
-            enabledBorder: UnderlineInputBorder(
+            enabledBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.white),
             ),
           ),
@@ -101,20 +114,6 @@ class _RestoListState extends State<RestoList> {
         return Scaffold(
           appBar: AppBar(
             title: _searchMode ? searchBar : appTitle,
-            leading: !_searchMode
-                ? null
-                : IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () {
-                      _searchController.clear();
-                      setState(() {
-                        _searchMode = false;
-                        _fadeTitle = false;
-                        _searching = false;
-                        searchedRestaurant.clear();
-                      });
-                    },
-                  ),
             actions: <IconButton>[
               if (!_searchMode)
                 IconButton(
