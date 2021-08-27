@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
-import 'package:rankedresto/screen/resto_detail_screen.dart';
+import 'package:rankedresto/screen/detail_screen.dart';
 
 class RestoCard extends StatelessWidget {
   const RestoCard(this.restaurant, {Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class RestoCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).pushNamed(
-          RestoDetailScreen.routeName,
+          DetailScreen.routeName,
           arguments: RestaurantDetail(
             id: restaurant.id,
             name: restaurant.name,
@@ -63,7 +63,10 @@ class RestoCard extends StatelessWidget {
             width: 45,
             child: Row(
               children: <Widget>[
-                Icon(Icons.star, color: Colors.yellow[600]),
+                Icon(
+                  Icons.star,
+                  color: Colors.yellow[600],
+                ),
                 Text(restaurant.rating.toString()),
               ],
             ),

@@ -8,15 +8,15 @@ import 'package:rankedresto/widget/rating_bar.dart';
 import 'package:rankedresto/widget/review_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
 
-class RestoDetailScreen extends StatefulWidget {
-  const RestoDetailScreen({Key? key}) : super(key: key);
+class DetailScreen extends StatefulWidget {
+  const DetailScreen({Key? key}) : super(key: key);
   static const String routeName = 'resto-detail';
 
   @override
-  _RestoDetailScreenState createState() => _RestoDetailScreenState();
+  _DetailScreenState createState() => _DetailScreenState();
 }
 
-class _RestoDetailScreenState extends State<RestoDetailScreen> {
+class _DetailScreenState extends State<DetailScreen> {
   bool sendingReview = false;
   final TextEditingController reviewController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
@@ -75,6 +75,13 @@ class _RestoDetailScreenState extends State<RestoDetailScreen> {
             passedRestaurantData.name,
             style: headline6!.copyWith(color: Colors.white),
           ),
+          actions: <IconButton>[
+            IconButton(
+              tooltip: 'Add to favorites',
+              icon: const Icon(Icons.favorite),
+              onPressed: () {},
+            ),
+          ],
         ),
         body: SafeArea(
           child: FutureBuilder<RestaurantDetail>(
@@ -194,6 +201,7 @@ class _RestoDetailScreenState extends State<RestoDetailScreen> {
                               suffixIcon: sendingReview
                                   ? const CircularProgressIndicator()
                                   : IconButton(
+                                      tooltip: 'Send',
                                       icon: const Icon(Icons.send),
                                       onPressed: () {
                                         addReview(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rankedresto/screen/resto_detail_screen.dart';
-import 'package:rankedresto/screen/resto_list_screen.dart';
+import 'package:rankedresto/screen/detail_screen.dart';
+import 'package:rankedresto/screen/nav_screen.dart';
 
 import 'theme.dart';
 
@@ -16,10 +16,10 @@ class RankedResto extends StatelessWidget {
       title: 'Ranked Resto',
       debugShowCheckedModeBanner: false,
       theme: theme,
-      initialRoute: RestoList.routeName,
+      initialRoute: NavScreen.routeName,
       routes: <String, Widget Function(BuildContext)>{
-        RestoList.routeName: (_) => RestoList(),
-        RestoDetailScreen.routeName: (_) => const RestoDetailScreen(),
+        NavScreen.routeName: (_) => NavScreen(),
+        DetailScreen.routeName: (_) => const DetailScreen(),
       },
     );
   }

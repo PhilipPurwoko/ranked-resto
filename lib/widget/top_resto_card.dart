@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
-import 'package:rankedresto/screen/resto_detail_screen.dart';
+import 'package:rankedresto/screen/detail_screen.dart';
 import 'package:rankedresto/widget/carousel_card.dart';
 import 'package:rankedresto/widget/rating_bar.dart';
 
@@ -28,7 +28,7 @@ class TopResto extends StatelessWidget {
             .map((Restaurant restaurant) => GestureDetector(
                   onTap: () {
                     Navigator.of(ctx).pushNamed(
-                      RestoDetailScreen.routeName,
+                      DetailScreen.routeName,
                       arguments: RestaurantDetail(
                         id: restaurant.id,
                         name: restaurant.name,

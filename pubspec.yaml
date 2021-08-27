@@ -8,6 +8,7 @@ environment:
 
 dependencies:
     animated_text_kit: ^4.2.1
+    awesome_notifications: ^0.0.6+10
     carousel_slider: ^4.0.0
     cupertino_icons: ^1.0.2
     flutter:
