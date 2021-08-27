@@ -1,17 +1,33 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_detail_model.dart';
+import 'package:rankedresto/model/resto_list_model.dart';
+
+final ChangeNotifierProvider<DetailProvider> detailProvider =
+    ChangeNotifierProvider<DetailProvider>(
+  (ProviderReference ref) => DetailProvider(),
+);
 
 class DetailProvider with ChangeNotifier {
   final Map<String, RestaurantDetail> _restaurants =
       <String, RestaurantDetail>{};
 
-  RestaurantDetail? getResto(String id) {
+  List<RestaurantDetail> get restaurants {
+    if (_restaurants.isEmpty) return <RestaurantDetail>[];
+    return _restaurants.values.toList();
+  }
+
+  List<Restaurant>? get filterByFavorites {
+    _restaurants.values.where((RestaurantDetail r) => r.isFavorite).toList();
+  }
+
+  RestaurantDetail? getFetchedRestaurantById(String id) {
     return _restaurants[id];
   }
 
-  Future<RestaurantDetail>? getRestaurantById(String id) async {
+  Future<RestaurantDetail>? fetchRestaurantById(String id) async {
     try {
       if (_restaurants[id] == null) {
         final Uri url =
@@ -26,6 +42,11 @@ class DetailProvider with ChangeNotifier {
     } catch (e) {
       return Future<RestaurantDetail>.error(e.toString());
     }
+  }
+
+  void toggleFavoritesById(String id) {
+    _restaurants[id]!.isFavorite = _restaurants[id]!.isFavorite;
+    notifyListeners();
   }
 
   Future<void> sendReview({

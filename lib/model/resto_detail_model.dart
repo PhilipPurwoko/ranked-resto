@@ -42,9 +42,9 @@ class RestoDetail {
             json['restaurant'] as Map<String, dynamic>),
       );
 
-  bool error;
-  String message;
-  RestaurantDetail restaurant;
+  final bool error;
+  final String message;
+  final RestaurantDetail restaurant;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'error': error,
@@ -65,6 +65,7 @@ class RestaurantDetail {
     this.categories,
     this.menus,
     this.customerReviews,
+    this.isFavorite = false,
   });
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
@@ -90,15 +91,16 @@ class RestaurantDetail {
         ),
       );
 
-  String id;
-  String name;
-  String description;
-  String city;
-  String pictureId;
-  double rating;
-  String? address;
-  Menus? menus;
-  List<CategoryOrMeal>? categories;
+  bool isFavorite;
+  final String id;
+  final String name;
+  final String description;
+  final String city;
+  final String pictureId;
+  final double rating;
+  final String? address;
+  final Menus? menus;
+  final List<CategoryOrMeal>? categories;
   List<CustomerReview>? customerReviews;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -129,7 +131,7 @@ class CategoryOrMeal {
   factory CategoryOrMeal.fromJson(Map<String, dynamic> json) =>
       CategoryOrMeal(name: json['name'].toString());
 
-  String name;
+  final String name;
 
   Map<String, dynamic> toJson() => <String, String>{'name': name};
 }
@@ -147,9 +149,9 @@ class CustomerReview {
         date: json['date'].toString(),
       );
 
-  String name;
-  String review;
-  String date;
+  final String name;
+  final String review;
+  final String date;
 
   Map<String, dynamic> toJson() => <String, String>{
         'name': name,
@@ -177,8 +179,8 @@ class Menus {
         ),
       );
 
-  List<CategoryOrMeal> foods;
-  List<CategoryOrMeal> drinks;
+  final List<CategoryOrMeal> foods;
+  final List<CategoryOrMeal> drinks;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'foods':

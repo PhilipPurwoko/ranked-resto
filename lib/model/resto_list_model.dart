@@ -17,10 +17,10 @@ class RestoList {
         ),
       );
 
-  bool error;
-  String message;
-  int count;
-  List<Restaurant> restaurants;
+  final bool error;
+  final String message;
+  final int count;
+  final List<Restaurant> restaurants;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'error': error,
@@ -51,12 +51,12 @@ class Restaurant {
         rating: double.parse(json['rating'].toString()),
       );
 
-  String id;
-  String name;
-  String description;
-  String pictureId;
-  String city;
-  double rating;
+  final String id;
+  final String name;
+  final String description;
+  final String pictureId;
+  final String city;
+  final double rating;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rankedresto/provider/detail_provider.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({Key? key}) : super(key: key);
@@ -10,6 +12,16 @@ class FavoriteScreen extends StatefulWidget {
 class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('No items. Try add something'));
+    return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
+      final DetailProvider detailState = watch<DetailProvider>(detailProvider);
+
+      return detailState.restaurants.isNotEmpty
+          ? ListView.builder(
+              itemCount: detailState.restaurants.length,
+              itemBuilder: (_, int index) =>
+                  Text(detailState.restaurants[index].name),
+            )
+          : const Center(child: Text('No items. Try add something'));
+    });
   }
 }

@@ -60,6 +60,7 @@ class _NavScreenState extends State<NavScreen> {
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         prefixIcon: IconButton(
+          tooltip: 'Cancel',
           icon: const Icon(Icons.arrow_back),
           color: Colors.white,
           onPressed: () {
@@ -118,6 +119,7 @@ class _NavScreenState extends State<NavScreen> {
         actions: <IconButton>[
           if (!_searchMode)
             IconButton(
+              tooltip: 'Search Restaurant',
               icon: const Icon(Icons.search),
               onPressed: () {
                 setState(() {

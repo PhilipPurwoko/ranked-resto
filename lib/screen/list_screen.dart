@@ -15,15 +15,10 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
-  final ChangeNotifierProvider<ListProvider> _listProvider =
-      ChangeNotifierProvider<ListProvider>(
-    (ProviderReference ref) => ListProvider(),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
-      final ListProvider listState = watch<ListProvider>(_listProvider);
+      final ListProvider listState = watch<ListProvider>(listProvider);
 
       return RefreshIndicator(
         onRefresh: () async {

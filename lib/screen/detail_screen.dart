@@ -20,10 +20,6 @@ class _DetailScreenState extends State<DetailScreen> {
   bool sendingReview = false;
   final TextEditingController reviewController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
-  final ChangeNotifierProvider<DetailProvider> _detailProvider =
-      ChangeNotifierProvider<DetailProvider>(
-    (ProviderReference ref) => DetailProvider(),
-  );
 
   @override
   void dispose() {
@@ -63,12 +59,13 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle? headline6 = Theme.of(context).textTheme.headline6;
     final RestaurantDetail passedRestaurantData =
         ModalRoute.of(context)!.settings.arguments! as RestaurantDetail;
-    final TextStyle? headline6 = Theme.of(context).textTheme.headline6;
 
     return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
-      final DetailProvider detailState = watch<DetailProvider>(_detailProvider);
+      final DetailProvider detailState = watch<DetailProvider>(detailProvider);
+
       return Scaffold(
         appBar: AppBar(
           title: Text(
@@ -85,7 +82,7 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         body: SafeArea(
           child: FutureBuilder<RestaurantDetail>(
-              future: detailState.getRestaurantById(passedRestaurantData.id),
+              future: detailState.fetchRestaurantById(passedRestaurantData.id),
               builder: (_, AsyncSnapshot<RestaurantDetail> snapshot) {
                 if (snapshot.hasData) {
                   return ListView(
