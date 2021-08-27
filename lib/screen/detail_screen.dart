@@ -72,13 +72,6 @@ class _DetailScreenState extends State<DetailScreen> {
             passedRestaurantData.name,
             style: headline6!.copyWith(color: Colors.white),
           ),
-          actions: <IconButton>[
-            IconButton(
-              tooltip: 'Add to favorites',
-              icon: const Icon(Icons.favorite),
-              onPressed: () {},
-            ),
-          ],
         ),
         body: SafeArea(
           child: FutureBuilder<RestaurantDetail>(
@@ -109,21 +102,35 @@ class _DetailScreenState extends State<DetailScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            const Icon(Icons.location_on, size: 16),
-                            Text(
-                              '${snapshot.data!.address}, ${snapshot.data!.city}',
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  '${snapshot.data!.address}, ${snapshot.data!.city}',
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    CustomRatingBar(snapshot.data!.rating),
+                                    Text(
+                                      '(${snapshot.data!.rating.toString()}) (${snapshot.data!.customerReviews!.length.toString()})',
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: <Widget>[
-                            CustomRatingBar(snapshot.data!.rating),
-                            Text(
-                              '(${snapshot.data!.rating.toString()}) (${snapshot.data!.customerReviews!.length.toString()})',
+                            IconButton(
+                              tooltip: 'Add to favorites',
+                              iconSize: 34,
+                              color: Theme.of(context).primaryColor,
+                              icon: Icon(snapshot.data!.isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border),
+                              onPressed: () {
+                                detailState.toggleFavoritesById(
+                                  passedRestaurantData.id,
+                                );
+                              },
                             ),
                           ],
                         ),

@@ -1,3 +1,5 @@
+import 'package:rankedresto/model/resto_list_model.dart';
+
 class CustomerReviewResponse {
   CustomerReviewResponse({
     required this.error,
@@ -121,6 +123,15 @@ class RestaurantDetail {
                 customerReviews!.map((CustomerReview x) => x.toJson()))
             : const Iterable<dynamic>.empty(),
       };
+
+  Restaurant toRestaurant() => Restaurant(
+        id: id,
+        name: name,
+        description: description,
+        pictureId: pictureId,
+        city: city,
+        rating: rating,
+      );
 }
 
 class CategoryOrMeal {

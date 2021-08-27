@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_detail_model.dart';
-import 'package:rankedresto/model/resto_list_model.dart';
 
 final ChangeNotifierProvider<DetailProvider> detailProvider =
     ChangeNotifierProvider<DetailProvider>(
@@ -19,8 +18,10 @@ class DetailProvider with ChangeNotifier {
     return _restaurants.values.toList();
   }
 
-  List<Restaurant>? get filterByFavorites {
-    _restaurants.values.where((RestaurantDetail r) => r.isFavorite).toList();
+  List<RestaurantDetail> get filterByFavorites {
+    return _restaurants.values
+        .where((RestaurantDetail r) => r.isFavorite)
+        .toList();
   }
 
   RestaurantDetail? getFetchedRestaurantById(String id) {
@@ -45,7 +46,7 @@ class DetailProvider with ChangeNotifier {
   }
 
   void toggleFavoritesById(String id) {
-    _restaurants[id]!.isFavorite = _restaurants[id]!.isFavorite;
+    _restaurants[id]!.isFavorite = !_restaurants[id]!.isFavorite;
     notifyListeners();
   }
 

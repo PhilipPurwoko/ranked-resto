@@ -12,6 +12,7 @@ class CustomRatingBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
+      itemPadding: const EdgeInsets.only(right: 5),
       itemSize: 24,
       allowHalfRating: true,
       ignoreGestures: true,
