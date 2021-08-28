@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/provider/detail_provider.dart';
+import 'package:rankedresto/provider/list_provider.dart';
 import 'package:rankedresto/util/error_dialog.dart';
 import 'package:rankedresto/widget/carousel_display.dart';
 import 'package:rankedresto/widget/rating_bar.dart';
@@ -18,6 +19,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   bool sendingReview = false;
+  bool? isFavorite;
   final TextEditingController reviewController = TextEditingController();
   final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
@@ -29,7 +31,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<void> addReview({
     required BuildContext context,
-    required DetailProvider detailState,
+    required DetailProvider detailProviderState,
     required String id,
     required String text,
   }) async {
@@ -40,7 +42,7 @@ class _DetailScreenState extends State<DetailScreen> {
     });
 
     try {
-      await detailState.sendReview(
+      await detailProviderState.sendReview(
         id: id,
         name: 'Test User',
         review: text,
@@ -64,7 +66,8 @@ class _DetailScreenState extends State<DetailScreen> {
         ModalRoute.of(context)!.settings.arguments! as RestaurantDetail;
 
     return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
-      final DetailProvider detailState = watch<DetailProvider>(detailProvider);
+      final DetailProvider detailProviderState =
+          watch<DetailProvider>(detailProvider);
 
       return Scaffold(
         appBar: AppBar(
@@ -75,7 +78,8 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         body: SafeArea(
           child: FutureBuilder<RestaurantDetail>(
-              future: detailState.fetchRestaurantById(passedRestaurantData.id),
+              future: detailProviderState
+                  .fetchRestaurantById(passedRestaurantData.id),
               builder: (_, AsyncSnapshot<RestaurantDetail> snapshot) {
                 if (snapshot.hasData) {
                   return ListView(
@@ -85,16 +89,13 @@ class _DetailScreenState extends State<DetailScreen> {
                         padding: const EdgeInsets.only(bottom: 20),
                         child: AspectRatio(
                           aspectRatio: 16.0 / 9.0,
-                          child: Hero(
-                            tag: passedRestaurantData.id,
-                            child: FadeInImage(
-                              fit: BoxFit.cover,
-                              placeholder: const AssetImage(
-                                'assets/placeholder.png',
-                              ),
-                              image: NetworkImage(
-                                passedRestaurantData.pictureId,
-                              ),
+                          child: FadeInImage(
+                            fit: BoxFit.cover,
+                            placeholder: const AssetImage(
+                              'assets/placeholder.png',
+                            ),
+                            image: NetworkImage(
+                              passedRestaurantData.pictureId,
                             ),
                           ),
                         ),
@@ -119,19 +120,35 @@ class _DetailScreenState extends State<DetailScreen> {
                                 ),
                               ],
                             ),
-                            IconButton(
-                              tooltip: 'Add to favorites',
-                              iconSize: 34,
-                              color: Theme.of(context).primaryColor,
-                              icon: Icon(snapshot.data!.isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border),
-                              onPressed: () {
-                                detailState.toggleFavoritesById(
-                                  passedRestaurantData.id,
-                                );
-                              },
-                            ),
+                            FutureBuilder<bool>(
+                                future: ListProvider.isRestaurantInFavorite(
+                                  snapshot.data!.id,
+                                ),
+                                builder: (_, AsyncSnapshot<bool> boolSnapshot) {
+                                  if (boolSnapshot.data == null) {
+                                    return const CircularProgressIndicator();
+                                  } else {
+                                    return IconButton(
+                                      tooltip: 'Add to favorites',
+                                      iconSize: 34,
+                                      color: Theme.of(context).primaryColor,
+                                      icon: Icon(
+                                        isFavorite ?? boolSnapshot.data!
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                      ),
+                                      onPressed: () {
+                                        ListProvider.toogleFavoriesById(
+                                          snapshot.data!.id,
+                                        ).then((_) {
+                                          setState(() {
+                                            isFavorite = !boolSnapshot.data!;
+                                          });
+                                        });
+                                      },
+                                    );
+                                  }
+                                }),
                           ],
                         ),
                       ),
@@ -210,7 +227,8 @@ class _DetailScreenState extends State<DetailScreen> {
                                       onPressed: () {
                                         addReview(
                                           context: context,
-                                          detailState: detailState,
+                                          detailProviderState:
+                                              detailProviderState,
                                           id: passedRestaurantData.id,
                                           text: reviewController.text,
                                         );
@@ -220,7 +238,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             onFieldSubmitted: (_) {
                               addReview(
                                 context: context,
-                                detailState: detailState,
+                                detailProviderState: detailProviderState,
                                 id: passedRestaurantData.id,
                                 text: reviewController.text,
                               );

@@ -67,7 +67,6 @@ class RestaurantDetail {
     this.categories,
     this.menus,
     this.customerReviews,
-    this.isFavorite = false,
   });
 
   factory RestaurantDetail.fromJson(Map<String, dynamic> json) =>
@@ -93,7 +92,6 @@ class RestaurantDetail {
         ),
       );
 
-  bool isFavorite;
   final String id;
   final String name;
   final String description;

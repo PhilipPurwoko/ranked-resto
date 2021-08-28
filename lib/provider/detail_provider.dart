@@ -18,12 +18,6 @@ class DetailProvider with ChangeNotifier {
     return _restaurants.values.toList();
   }
 
-  List<RestaurantDetail> get filterByFavorites {
-    return _restaurants.values
-        .where((RestaurantDetail r) => r.isFavorite)
-        .toList();
-  }
-
   RestaurantDetail? getFetchedRestaurantById(String id) {
     return _restaurants[id];
   }
@@ -43,11 +37,6 @@ class DetailProvider with ChangeNotifier {
     } catch (e) {
       return Future<RestaurantDetail>.error(e.toString());
     }
-  }
-
-  void toggleFavoritesById(String id) {
-    _restaurants[id]!.isFavorite = !_restaurants[id]!.isFavorite;
-    notifyListeners();
   }
 
   Future<void> sendReview({

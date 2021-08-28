@@ -7,29 +7,22 @@ import 'package:rankedresto/widget/resto_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
 import 'package:rankedresto/widget/top_resto_card.dart';
 
-class ListScreen extends StatefulWidget {
-  const ListScreen({Key? key}) : super(key: key);
-
-  @override
-  _ListScreenState createState() => _ListScreenState();
-}
-
-class _ListScreenState extends State<ListScreen> {
+class ListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
-      final ListProvider listState = watch<ListProvider>(listProvider);
+      final ListProvider listProviderState = watch<ListProvider>(listProvider);
 
       return RefreshIndicator(
         onRefresh: () async {
           try {
-            await listState.fetchRestaurants();
+            await listProviderState.fetchRestaurants();
           } catch (_) {
             showError(context, 'Failed to load data');
           }
         },
         child: FutureBuilder<String?>(
-          future: listState.fetchRestaurants(),
+          future: listProviderState.fetchRestaurants(),
           builder: (_, AsyncSnapshot<String?> snapshot) {
             if (snapshot.hasError) {
               return ListView(
@@ -43,12 +36,15 @@ class _ListScreenState extends State<ListScreen> {
                   ),
                 ],
               );
-            } else if (listState.restaurants.isNotEmpty) {
-              final List<Widget> restaurantsWidget = listState.restaurants
+            } else if (listProviderState.restaurants.isNotEmpty) {
+              final List<Widget> restaurantsWidget = listProviderState
+                  .restaurants
                   .map<Widget>((Restaurant r) => RestoCard(r))
                   .toList();
 
-              final List<Restaurant> sortedRestaurant = listState.restaurants;
+              final List<Restaurant> sortedRestaurant =
+                  listProviderState.restaurants;
+
               sortedRestaurant.sort(
                   (Restaurant a, Restaurant b) => a.rating.compareTo(b.rating));
 
@@ -62,7 +58,7 @@ class _ListScreenState extends State<ListScreen> {
 
               return ListView.builder(
                 physics: const BouncingScrollPhysics(),
-                itemCount: listState.restaurants.length + 1,
+                itemCount: listProviderState.restaurants.length + 1,
                 itemBuilder: (_, int i) => restaurantsWidget[i],
               );
             } else {

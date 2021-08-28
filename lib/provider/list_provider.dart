@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:rankedresto/model/resto_list_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final ChangeNotifierProvider<ListProvider> listProvider =
     ChangeNotifierProvider<ListProvider>(
@@ -10,11 +11,16 @@ final ChangeNotifierProvider<ListProvider> listProvider =
 );
 
 class ListProvider with ChangeNotifier {
+  static const String favoriteRestaurantsKey = 'favorite';
   List<Restaurant> _restaurants = <Restaurant>[];
 
   List<Restaurant> get restaurants {
     if (_restaurants.isEmpty) return <Restaurant>[];
     return _restaurants;
+  }
+
+  Restaurant getRestaurantById(String id) {
+    return _restaurants.firstWhere((Restaurant r) => r.id == id);
   }
 
   Future<String?> fetchRestaurants() async {
@@ -30,5 +36,32 @@ class ListProvider with ChangeNotifier {
     } catch (e) {
       if (_restaurants.isEmpty) return Future<String>.error(e.toString());
     }
+  }
+
+  static Future<List<String>> toogleFavoriesById(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> favorites =
+        prefs.getStringList(favoriteRestaurantsKey) ?? <String>[];
+
+    if (favorites.contains(id)) {
+      favorites.remove(id);
+    } else {
+      favorites.add(id);
+    }
+
+    prefs.setStringList(favoriteRestaurantsKey, favorites);
+    return favorites;
+  }
+
+  static Future<List<String>> getFavoritesRestaurantsId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(favoriteRestaurantsKey) ?? <String>[];
+  }
+
+  static Future<bool> isRestaurantInFavorite(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> favorites =
+        prefs.getStringList(favoriteRestaurantsKey) ?? <String>[];
+    return favorites.contains(id);
   }
 }

@@ -26,8 +26,8 @@ class _NavScreenState extends State<NavScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   final List<Widget> _screens = <Widget>[
-    const ListScreen(),
-    const FavoriteScreen(),
+    ListScreen(),
+    FavoriteScreen(),
     const SettingScreen(),
   ];
 

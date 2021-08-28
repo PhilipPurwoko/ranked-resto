@@ -28,23 +28,20 @@ class RestoCard extends StatelessWidget {
         child: ListTile(
           leading: AspectRatio(
             aspectRatio: 16 / 9,
-            child: Hero(
-              tag: restaurant.id,
-              child: FadeInImage(
-                fit: BoxFit.cover,
-                placeholder: const AssetImage('assets/placeholder.png'),
-                imageErrorBuilder: (
-                  BuildContext _,
-                  Object error,
-                  StackTrace? stackTrace,
-                ) =>
-                    Image.asset(
-                  'assets/placeholder.png',
-                  fit: BoxFit.fitWidth,
-                ),
-                image: NetworkImage(
-                  restaurant.pictureId,
-                ),
+            child: FadeInImage(
+              fit: BoxFit.cover,
+              placeholder: const AssetImage('assets/placeholder.png'),
+              imageErrorBuilder: (
+                BuildContext _,
+                Object error,
+                StackTrace? stackTrace,
+              ) =>
+                  Image.asset(
+                'assets/placeholder.png',
+                fit: BoxFit.fitWidth,
+              ),
+              image: NetworkImage(
+                restaurant.pictureId,
               ),
             ),
           ),
@@ -62,6 +59,7 @@ class RestoCard extends StatelessWidget {
           trailing: SizedBox(
             width: 45,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Icon(
                   Icons.star,

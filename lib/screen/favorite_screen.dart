@@ -1,29 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rankedresto/provider/detail_provider.dart';
+import 'package:rankedresto/provider/list_provider.dart';
 import 'package:rankedresto/widget/resto_card.dart';
+import 'package:rankedresto/widget/shimmer.dart';
 
-class FavoriteScreen extends StatefulWidget {
-  const FavoriteScreen({Key? key}) : super(key: key);
-
-  @override
-  _FavoriteScreenState createState() => _FavoriteScreenState();
-}
-
-class _FavoriteScreenState extends State<FavoriteScreen> {
+class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
-      final DetailProvider detailState = watch<DetailProvider>(detailProvider);
+      final ListProvider listProviderState = watch<ListProvider>(listProvider);
 
-      return detailState.filterByFavorites.isNotEmpty
-          ? ListView.builder(
-              itemCount: detailState.filterByFavorites.length,
-              itemBuilder: (_, int index) => RestoCard(
-                detailState.filterByFavorites[index].toRestaurant(),
-              ),
-            )
-          : const Center(child: Text('No items. Try add something'));
+      return RefreshIndicator(
+        onRefresh: ListProvider.getFavoritesRestaurantsId,
+        child: FutureBuilder<String?>(
+            future: listProviderState.fetchRestaurants(),
+            builder: (_, __) {
+              if (listProviderState.restaurants.isEmpty) {
+                return listTileShimmer;
+              }
+              return FutureBuilder<List<String>>(
+                future: ListProvider.getFavoritesRestaurantsId(),
+                builder: (_, AsyncSnapshot<List<String>> snapshot) {
+                  if (snapshot.data == null) {
+                    return listTileShimmer;
+                  }
+                  return snapshot.data!.isEmpty
+                      ? const Center(child: Text('No items. Try add something'))
+                      : ListView.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (_, int index) => ListTile(
+                            title: RestoCard(
+                              listProviderState.getRestaurantById(
+                                snapshot.data![index],
+                              ),
+                            ),
+                          ),
+                        );
+                },
+              );
+            }),
+      );
     });
   }
 }
