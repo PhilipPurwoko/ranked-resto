@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
 import 'package:rankedresto/provider/list_provider.dart';
-import 'package:rankedresto/util/error_dialog.dart';
+import 'package:rankedresto/functions/error_dialog.dart';
 import 'package:rankedresto/widget/resto_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
 import 'package:rankedresto/widget/top_resto_card.dart';

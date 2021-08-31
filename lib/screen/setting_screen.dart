@@ -1,4 +1,7 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:rankedresto/functions/notification.dart';
+import 'package:rankedresto/screen/dummy_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -19,10 +22,30 @@ class _SettingScreenState extends State<SettingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text('Daily Reminder'),
+              const Text('Daily Recomendation'),
               Switch.adaptive(
                 value: isReminderActive,
-                onChanged: (_) {
+                onChanged: (_) async {
+                  if (isReminderActive) {
+                    AwesomeNotifications().cancelAllSchedules();
+                  } else {
+                    await activateDailyReminder();
+                    final bool isHaveActionStream =
+                        await AwesomeNotifications().actionStream.isEmpty;
+                    if (isHaveActionStream) {
+                      AwesomeNotifications().actionStream.listen(
+                        (ReceivedAction notification) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext ctx) =>
+                                  const DummyScreen(),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  }
+
                   setState(() {
                     isReminderActive = !isReminderActive;
                   });

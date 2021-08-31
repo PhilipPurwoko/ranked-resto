@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/provider/detail_provider.dart';
 import 'package:rankedresto/provider/list_provider.dart';
-import 'package:rankedresto/util/error_dialog.dart';
+import 'package:rankedresto/functions/error_dialog.dart';
 import 'package:rankedresto/widget/carousel_display.dart';
 import 'package:rankedresto/widget/rating_bar.dart';
 import 'package:rankedresto/widget/review_card.dart';

@@ -1,11 +1,22 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/screen/detail_screen.dart';
 import 'package:rankedresto/screen/nav_screen.dart';
-
-import 'theme.dart';
+import 'package:rankedresto/theme.dart';
 
 void main() {
+  AwesomeNotifications().initialize(
+    null,
+    <NotificationChannel>[
+      NotificationChannel(
+        channelShowBadge: true,
+        channelKey: 'basic_channel',
+        channelName: 'Basic Notification',
+        importance: NotificationImportance.High,
+      ),
+    ],
+  );
   runApp(ProviderScope(child: RankedResto()));
 }
 
