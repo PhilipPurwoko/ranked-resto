@@ -1,7 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/functions/notification.dart';
-import 'package:rankedresto/screen/dummy_screen.dart';
+import 'package:rankedresto/model/resto_detail_model.dart';
+import 'package:rankedresto/provider/list_provider.dart';
+import 'package:rankedresto/screen/detail_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -15,46 +18,62 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const Text('Daily Recomendation'),
-              Switch.adaptive(
-                value: isReminderActive,
-                onChanged: (_) async {
-                  if (isReminderActive) {
-                    AwesomeNotifications().cancelAllSchedules();
-                  } else {
-                    await activateDailyReminder();
-                    final bool isHaveActionStream =
-                        await AwesomeNotifications().actionStream.isEmpty;
-                    if (isHaveActionStream) {
-                      AwesomeNotifications().actionStream.listen(
-                        (ReceivedAction notification) {
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext ctx) =>
-                                  const DummyScreen(),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  }
+    return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
+      final ListProvider listProviderState = watch<ListProvider>(listProvider);
 
-                  setState(() {
-                    isReminderActive = !isReminderActive;
-                  });
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                const Text('Daily Recomendation'),
+                Switch.adaptive(
+                  value: isReminderActive,
+                  onChanged: (_) async {
+                    if (isReminderActive) {
+                      await AwesomeNotifications().cancelAllSchedules();
+                      print('Schedulle deleted');
+                    } else {
+                      await activateDailyReminder(
+                        listProviderState.restaurants,
+                      );
+
+                      try {
+                        AwesomeNotifications().actionStream.listen(
+                          (ReceivedAction notification) {
+                            final Map<String, String> restaurant =
+                                notification.payload!;
+
+                            Navigator.of(context).pushNamed(
+                              DetailScreen.routeName,
+                              arguments: RestaurantDetail(
+                                id: restaurant['id']!,
+                                name: restaurant['name']!,
+                                description: restaurant['description']!,
+                                city: restaurant['city']!,
+                                pictureId: restaurant['pictureId']!,
+                                rating: double.parse(restaurant['rating']!),
+                              ),
+                            );
+                          },
+                        );
+                      } catch (err) {
+                        print(err);
+                      }
+                    }
+
+                    setState(() {
+                      isReminderActive = !isReminderActive;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
