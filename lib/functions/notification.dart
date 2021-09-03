@@ -1,29 +1,39 @@
-import 'dart:math';
-import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
-Future<void> activateDailyReminder(List<Restaurant> restaurants) async {
+Future<void> makeScheduledNotification(List<Restaurant> restaurants) async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   if (restaurants.isNotEmpty) {
-    restaurants.shuffle();
-    final Restaurant restaurant = restaurants.first;
-    final String localTimeZoneIdentifier =
-        await AwesomeNotifications().getLocalTimeZoneIdentifier();
-
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: Random.secure().nextInt(1000),
-        channelKey: 'basic_channel',
-        title: 'Recomended Restaurant For You | ${restaurant.name}',
-        body: restaurant.description,
-        bigPicture: restaurant.pictureId,
-        notificationLayout: NotificationLayout.BigPicture,
-        payload: restaurant.toJson(),
+    final Restaurant restaurant = (restaurants..shuffle()).first;
+    tz.initializeTimeZones();
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      1,
+      'Recomended Restaurant For You | ${restaurant.name}',
+      restaurant.description,
+      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          '1',
+          'scheduled_name',
+          'Channel for scheduled notification',
+          importance: Importance.high,
+        ),
       ),
-      schedule: NotificationInterval(
-        interval: 5,
-        timeZone: localTimeZoneIdentifier,
-        repeats: true,
-      ),
+      androidAllowWhileIdle: true,
+      payload: restaurant.toJson().toString(),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
+}
+
+Future<void> selectedNotification(String? payload) async {}
+
+Future<void> disableDailyReminder() async {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  await flutterLocalNotificationsPlugin.cancelAll();
 }
