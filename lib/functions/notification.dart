@@ -1,59 +1,23 @@
-import 'dart:convert';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:rankedresto/model/resto_detail_model.dart';
-import 'package:rankedresto/model/resto_list_model.dart';
-import 'package:rankedresto/screen/detail_screen.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'dart:math';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
-Future<void> makeScheduledNotification(List<Restaurant> restaurants) async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  if (restaurants.isNotEmpty) {
-    final Restaurant restaurant = (restaurants..shuffle()).first;
-    tz.initializeTimeZones();
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      1,
-      'Recomended Restaurant For You | ${restaurant.name}',
-      restaurant.description,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          '1',
-          'scheduled_channel',
-          'Channel for scheduled notification',
-          importance: Importance.high,
-        ),
-      ),
-      androidAllowWhileIdle: true,
-      payload: restaurant.toJson().toString(),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
-  }
-}
+Future<void> activateDailyReminder() async {
+  final String localTimeZoneIdentifier =
+      await AwesomeNotifications().getLocalTimeZoneIdentifier();
 
-Future<void> selectedNotification(BuildContext context, String? payload) async {
-  final Restaurant restaurant = Restaurant.fromJson(
-    json.decode(payload!) as Map<String, dynamic>,
-  );
-
-  Navigator.of(context).pushNamed(
-    DetailScreen.routeName,
-    arguments: RestaurantDetail(
-      id: restaurant.id,
-      name: restaurant.name,
-      description: restaurant.description,
-      city: restaurant.city,
-      pictureId: restaurant.pictureId,
-      rating: restaurant.rating,
+  await AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: Random.secure().nextInt(1000),
+      channelKey: 'basic_channel',
+      title: 'Recomended Restaurant For You',
+      body: 'Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum',
+      bigPicture: 'asset://assets/placeholder.png',
+      notificationLayout: NotificationLayout.BigPicture,
+    ),
+    schedule: NotificationInterval(
+      interval: 5,
+      timeZone: localTimeZoneIdentifier,
+      repeats: true,
     ),
   );
-}
-
-Future<void> disableDailyReminder() async {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  await flutterLocalNotificationsPlugin.cancelAll();
 }

@@ -1,7 +1,9 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/functions/notification.dart';
-import 'package:rankedresto/provider/list_provider.dart';
+import 'package:rankedresto/model/resto_detail_model.dart';
+import 'package:rankedresto/model/resto_list_model.dart';
+import 'package:rankedresto/screen/detail_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -15,40 +17,54 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (BuildContext ctx, ScopedReader watch, _) {
-      final ListProvider listProviderState = watch<ListProvider>(listProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const Text('Daily Recomendation'),
+              Switch.adaptive(
+                value: isReminderActive,
+                onChanged: (_) async {
+                  if (isReminderActive) {
+                    AwesomeNotifications().cancelAllSchedules();
+                  } else {
+                    await activateDailyReminder();
+                    final bool isHaveActionStream =
+                        await AwesomeNotifications().actionStream.isEmpty;
+                    if (isHaveActionStream) {
+                      AwesomeNotifications().actionStream.listen(
+                        (ReceivedAction notification) {
+                          final Restaurant restaurant =
+                              Restaurant.fromJson(notification.payload!);
 
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                const Text('Daily Recomendation'),
-                Switch.adaptive(
-                  value: isReminderActive,
-                  onChanged: (_) async {
-                    if (isReminderActive) {
-                      await disableDailyReminder();
-                      debugPrint('Schedulle disabled');
-                    } else {
-                      await makeScheduledNotification(
-                        listProviderState.restaurants,
+                          Navigator.of(context).pushNamed(
+                            DetailScreen.routeName,
+                            arguments: RestaurantDetail(
+                              id: restaurant.id,
+                              name: restaurant.name,
+                              description: restaurant.description,
+                              city: restaurant.city,
+                              pictureId: restaurant.pictureId,
+                              rating: restaurant.rating,
+                            ),
+                          );
+                        },
                       );
-                      debugPrint('Schedulle activated');
                     }
+                  }
 
-                    setState(() {
-                      isReminderActive = !isReminderActive;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    });
+                  setState(() {
+                    isReminderActive = !isReminderActive;
+                  });
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

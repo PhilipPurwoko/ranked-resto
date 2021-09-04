@@ -9,15 +9,14 @@ environment:
 dependencies:
     android_alarm_manager_plus: ^1.2.0
     animated_text_kit: ^4.2.1
+    awesome_notifications: ^0.0.6+10
     carousel_slider: ^4.0.0
     cupertino_icons: ^1.0.2
     flutter:
         sdk: flutter
-    flutter_local_notifications: ^8.1.1+2
     flutter_rating_bar: ^4.0.0
     flutter_riverpod: ^0.14.0+3
     http: ^0.13.3
-    rxdart: ^0.27.2
     shared_preferences: ^2.0.7
     shimmer: ^2.0.0
 

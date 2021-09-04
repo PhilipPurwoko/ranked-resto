@@ -58,12 +58,12 @@ class Restaurant {
   final String city;
   final double rating;
 
-  Map<String, String> toJson() => <String, String>{
+  Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
         'name': name,
         'description': description,
         'pictureId': pictureId,
         'city': city,
-        'rating': rating.toString(),
+        'rating': rating,
       };
 }
