@@ -1,32 +1,52 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rankedresto/functions/notification.dart';
 import 'package:rankedresto/screen/detail_screen.dart';
 import 'package:rankedresto/screen/nav_screen.dart';
 import 'package:rankedresto/theme.dart';
 
 void main() {
-  AwesomeNotifications().initialize(
-    null,
-    <NotificationChannel>[
-      NotificationChannel(
-        channelShowBadge: true,
-        channelKey: 'basic_channel',
-        channelName: 'Basic Notification',
-        importance: NotificationImportance.High,
-      ),
-    ],
+  runApp(
+    ProviderScope(
+      child: RankedResto(),
+    ),
   );
-  runApp(ProviderScope(child: RankedResto()));
 }
 
-class RankedResto extends StatelessWidget {
+class RankedResto extends StatefulWidget {
+  @override
+  _RankedRestoState createState() => _RankedRestoState();
+}
+
+class _RankedRestoState extends State<RankedResto> {
+  @override
+  void initState() {
+    super.initState();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onSelectNotification: (String? payload) => selectedNotification(
+        context,
+        payload,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: theme,
       title: 'Ranked Resto',
       debugShowCheckedModeBanner: false,
-      theme: theme,
       initialRoute: NavScreen.routeName,
       routes: <String, Widget Function(BuildContext)>{
         NavScreen.routeName: (_) => NavScreen(),

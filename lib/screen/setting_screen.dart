@@ -1,10 +1,7 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/functions/notification.dart';
-import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/provider/list_provider.dart';
-import 'package:rankedresto/screen/detail_screen.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -33,35 +30,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   value: isReminderActive,
                   onChanged: (_) async {
                     if (isReminderActive) {
-                      await AwesomeNotifications().cancelAllSchedules();
-                      print('Schedulle deleted');
+                      await disableDailyReminder();
+                      debugPrint('Schedulle disabled');
                     } else {
-                      await activateDailyReminder(
+                      await makeScheduledNotification(
                         listProviderState.restaurants,
                       );
-
-                      try {
-                        AwesomeNotifications().actionStream.listen(
-                          (ReceivedAction notification) {
-                            final Map<String, String> restaurant =
-                                notification.payload!;
-
-                            Navigator.of(context).pushNamed(
-                              DetailScreen.routeName,
-                              arguments: RestaurantDetail(
-                                id: restaurant['id']!,
-                                name: restaurant['name']!,
-                                description: restaurant['description']!,
-                                city: restaurant['city']!,
-                                pictureId: restaurant['pictureId']!,
-                                rating: double.parse(restaurant['rating']!),
-                              ),
-                            );
-                          },
-                        );
-                      } catch (err) {
-                        print(err);
-                      }
+                      debugPrint('Schedulle activated');
                     }
 
                     setState(() {
