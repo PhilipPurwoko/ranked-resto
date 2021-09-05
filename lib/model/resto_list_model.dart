@@ -46,7 +46,7 @@ class Restaurant {
         name: json['name'].toString(),
         description: json['description'].toString(),
         pictureId:
-            'https://restaurant-api.dicoding.dev/images/medium/${json['pictureId']}',
+            'https://restaurant-api.dicoding.dev/images/small/${json['pictureId']}',
         city: json['city'].toString(),
         rating: double.parse(json['rating'].toString()),
       );
@@ -62,7 +62,7 @@ class Restaurant {
         'id': id,
         'name': name,
         'description': description,
-        'pictureId': pictureId,
+        'pictureId': pictureId.split('/').last,
         'city': city,
         'rating': rating.toString(),
       };

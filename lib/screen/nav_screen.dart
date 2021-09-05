@@ -1,4 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
 import 'package:rankedresto/model/searched_resto.dart';
@@ -30,6 +31,16 @@ class _NavScreenState extends State<NavScreen> {
     FavoriteScreen(),
     const SettingScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    AwesomeNotifications().isNotificationAllowed().then((bool isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+  }
 
   @override
   void dispose() {

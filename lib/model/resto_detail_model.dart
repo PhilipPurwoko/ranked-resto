@@ -77,7 +77,7 @@ class RestaurantDetail {
         city: json['city'].toString(),
         address: json['address'].toString(),
         pictureId:
-            'https://restaurant-api.dicoding.dev/images/medium/${json['pictureId']}',
+            'https://restaurant-api.dicoding.dev/images/small/${json['pictureId']}',
         rating: double.parse(json['rating'].toString()),
         menus: Menus.fromJson(json['menus'] as Map<String, dynamic>),
         categories: List<CategoryOrMeal>.from(

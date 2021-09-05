@@ -8,16 +8,22 @@ import 'package:rankedresto/screen/nav_screen.dart';
 import 'package:rankedresto/theme.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  AwesomeNotifications().initialize(null, <NotificationChannel>[
+    NotificationChannel(
+      channelKey: 'scheduled_channel',
+      channelName: 'Scheduled Notifications',
+      importance: NotificationImportance.High,
+    ),
+  ]);
+
   final NavigationService navigatorService = NavigationService();
   AwesomeNotifications().actionStream.listen(
     (ReceivedAction notification) {
       final Restaurant restaurant = Restaurant.fromJson(notification.payload!);
-      debugPrint('Receifed Notification : ${restaurant.name}');
       navigatorService.navigateToDetailScreen(restaurant);
     },
   );
-  debugPrint('Stream listened');
+
   runApp(
     ProviderScope(
       child: RankedResto(navigatorService),

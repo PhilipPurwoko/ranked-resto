@@ -7,6 +7,7 @@ class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Future<void> navigateToDetailScreen(Restaurant restaurant) async {
+    debugPrint(restaurant.pictureId);
     navigatorKey.currentState!.pushNamed(
       DetailScreen.routeName,
       arguments: RestaurantDetail(
