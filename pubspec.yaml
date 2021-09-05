@@ -7,7 +7,7 @@ environment:
     sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-    android_alarm_manager_plus: ^1.2.0
+    android_alarm_manager: ^2.0.2
     animated_text_kit: ^4.2.1
     awesome_notifications: ^0.0.6+10
     carousel_slider: ^4.0.0

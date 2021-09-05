@@ -1,4 +1,3 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rankedresto/functions/notification.dart';
@@ -30,10 +29,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   value: isReminderActive,
                   onChanged: (_) async {
                     if (isReminderActive) {
-                      await AwesomeNotifications().cancelAllSchedules();
-                      debugPrint('Scedhuled disabled');
+                      await disableDailyNotification();
                     } else {
-                      await createScheduledNotification(
+                      await activateDailyNotification(
                         listProviderState.restaurants,
                       );
                       debugPrint('Scedhuled activated');

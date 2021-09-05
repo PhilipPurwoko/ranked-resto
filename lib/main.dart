@@ -7,8 +7,8 @@ import 'package:rankedresto/screen/detail_screen.dart';
 import 'package:rankedresto/screen/nav_screen.dart';
 import 'package:rankedresto/theme.dart';
 
-void main() {
-  AwesomeNotifications().initialize(null, <NotificationChannel>[
+Future<void> main() async {
+  await AwesomeNotifications().initialize(null, <NotificationChannel>[
     NotificationChannel(
       channelKey: 'scheduled_channel',
       channelName: 'Scheduled Notifications',
