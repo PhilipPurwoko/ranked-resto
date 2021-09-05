@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const int alarmId = 1;
 const String localRestaurantIdKey = 'local_restaurant_id';
+const String dailyReminderKey = 'is_daily_reminder_activated';
 
 Future<void> activateDailyNotification(List<Restaurant> restaurants) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -18,8 +19,9 @@ Future<void> activateDailyNotification(List<Restaurant> restaurants) async {
     restaurants.map((Restaurant restaurant) => restaurant.id).toList(),
   );
   await AndroidAlarmManager.initialize();
+  // TODO: Schedule daily notification at specific time
   await AndroidAlarmManager.periodic(
-    const Duration(seconds: 5),
+    const Duration(days: 1),
     alarmId,
     createScheduledNotification,
   );
@@ -29,11 +31,11 @@ Future<void> createScheduledNotification() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final List<String> localRestaurantId =
       prefs.getStringList(localRestaurantIdKey) ?? <String>[];
+
   if (localRestaurantId.isEmpty) {
     return;
   }
-  final String localTimeZoneIdentifier =
-      await AwesomeNotifications().getLocalTimeZoneIdentifier();
+
   final String randomRestaurantId = (localRestaurantId..shuffle()).first;
   final Restaurant? restaurant = await getRestaurantById(randomRestaurantId);
   if (restaurant == null) {
@@ -49,10 +51,6 @@ Future<void> createScheduledNotification() async {
       bigPicture: restaurant.pictureId,
       notificationLayout: NotificationLayout.BigPicture,
       payload: restaurant.toJson(),
-    ),
-    schedule: NotificationInterval(
-      interval: 5,
-      timeZone: localTimeZoneIdentifier,
     ),
   );
 }
@@ -75,4 +73,9 @@ Future<Restaurant?> getRestaurantById(String id) async {
   } catch (e) {
     debugPrint(e.toString());
   }
+}
+
+Future<bool> getDailyReminderSettings() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool(dailyReminderKey) ?? false;
 }
