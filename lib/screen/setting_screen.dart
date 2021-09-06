@@ -44,11 +44,14 @@ class _SettingScreenState extends State<SettingScreen> {
                               await disableDailyNotification();
                               await prefs.setBool(dailyReminderKey, false);
                             } else {
-                              await activateDailyNotification(
+                              final Duration nextAlarmDuration =
+                                  await activateDailyNotification(
                                 listProviderState.restaurants,
                               );
                               await prefs.setBool(dailyReminderKey, true);
-                              debugPrint('Scedhuled activated');
+                              debugPrint(
+                                'Scedhuled activated. Countdown $nextAlarmDuration',
+                              );
                             }
 
                             setState(() {
