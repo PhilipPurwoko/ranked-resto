@@ -39,7 +39,7 @@ class DetailProvider with ChangeNotifier {
     }
   }
 
-  Future<void> sendReview({
+  Future<List<CustomerReview>> sendReview({
     required String id,
     required String name,
     required String review,
@@ -60,9 +60,13 @@ class DetailProvider with ChangeNotifier {
 
       final Map<String, dynamic> data =
           json.decode(res.body) as Map<String, dynamic>;
-      _restaurants[id]!.customerReviews =
+
+      final List<CustomerReview> customerReviewsResponse =
           CustomerReviewResponse.fromJson(data).customerReviews;
+
+      _restaurants[id]!.customerReviews = customerReviewsResponse;
       notifyListeners();
+      return customerReviewsResponse;
     } catch (e) {
       throw Exception(e.toString());
     }
