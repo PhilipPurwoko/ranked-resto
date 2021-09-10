@@ -1,12 +1,12 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:rankedresto/functions/error_dialog.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
 import 'package:rankedresto/model/searched_resto.dart';
 import 'package:rankedresto/screen/favorite_screen.dart';
 import 'package:rankedresto/screen/list_screen.dart';
 import 'package:rankedresto/screen/setting_screen.dart';
-import 'package:rankedresto/functions/error_dialog.dart';
 import 'package:rankedresto/widget/resto_card.dart';
 import 'package:rankedresto/widget/shimmer.dart';
 
