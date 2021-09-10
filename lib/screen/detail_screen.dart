@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rankedresto/model/customer_review.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/provider/detail_provider.dart';
 import 'package:rankedresto/provider/list_provider.dart';

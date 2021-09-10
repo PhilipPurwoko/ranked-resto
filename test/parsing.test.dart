@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rankedresto/model/customer_review.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 import 'package:rankedresto/model/resto_list_model.dart';
 import 'package:rankedresto/model/searched_resto.dart';

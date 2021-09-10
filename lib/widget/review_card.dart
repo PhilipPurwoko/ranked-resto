@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rankedresto/model/resto_detail_model.dart';
+import 'package:rankedresto/model/customer_review.dart';
 
 class ReviewCard extends StatelessWidget {
   const ReviewCard(this.review, {Key? key}) : super(key: key);

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:rankedresto/model/customer_review.dart';
 import 'package:rankedresto/model/resto_detail_model.dart';
 
 final ChangeNotifierProvider<DetailProvider> detailProvider =
