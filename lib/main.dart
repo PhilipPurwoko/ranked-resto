@@ -26,21 +26,21 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      child: RankedResto(navigatorService),
+      child: _RankedResto(navigatorService),
     ),
   );
 }
 
-class RankedResto extends StatelessWidget {
-  const RankedResto(this.navigatorService);
-  final NavigationService navigatorService;
+class _RankedResto extends StatelessWidget {
+  const _RankedResto(this._navigatorService);
+  final NavigationService _navigatorService;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
       title: 'Ranked Resto',
-      navigatorKey: navigatorService.navigatorKey,
+      navigatorKey: _navigatorService.navigatorKey,
       debugShowCheckedModeBanner: false,
       initialRoute: NavScreen.routeName,
       routes: <String, Widget Function(BuildContext)>{

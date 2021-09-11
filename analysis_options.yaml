@@ -1,11 +1,15 @@
 include: package:lint/analysis_options.yaml
 
+analyzer:
+    errors:
+        todo: info
+
 linter:
     rules:
         always_put_required_named_parameters_first: true
+        always_specify_types: true
         avoid_classes_with_only_static_members: true
-        sort_constructors_first: true
+        lines_longer_than_80_chars: false
         prefer_single_quotes: true
         public_member_api_docs: false
-        always_specify_types: true
-        lines_longer_than_80_chars: false
+        sort_constructors_first: true

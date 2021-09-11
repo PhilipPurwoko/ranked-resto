@@ -13,6 +13,8 @@ const int alarmId = 1;
 const String localRestaurantIdKey = 'local_restaurant_id';
 const String dailyReminderKey = 'is_daily_reminder_activated';
 
+/// Schedule to run `createScheduledNotification` function at roughly 11:00 AM
+/// and save random restaurant form given [restaurants] using shared preferences
 Future<Duration> activateDailyNotification(List<Restaurant> restaurants) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setStringList(
@@ -24,12 +26,13 @@ Future<Duration> activateDailyNotification(List<Restaurant> restaurants) async {
   await AndroidAlarmManager.periodic(
     alarmDuration,
     alarmId,
-    createScheduledNotification,
+    fireNotification,
   );
   return alarmDuration;
 }
 
-Future<void> createScheduledNotification() async {
+/// Create single notification of random restaurants from saved data using shared preferences
+Future<void> fireNotification() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final List<String> localRestaurantId =
       prefs.getStringList(localRestaurantIdKey) ?? <String>[];
@@ -62,6 +65,12 @@ Future<void> disableDailyNotification() async {
   await AwesomeNotifications().cancelAllSchedules();
 }
 
+/// Return bool which represent the daily reminder settings
+Future<bool> getDailyReminderSettings() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getBool(dailyReminderKey) ?? false;
+}
+
 Future<Restaurant?> getRestaurantById(String id) async {
   try {
     final Uri url = Uri.parse('https://restaurant-api.dicoding.dev/list');
@@ -75,9 +84,4 @@ Future<Restaurant?> getRestaurantById(String id) async {
   } catch (e) {
     debugPrint(e.toString());
   }
-}
-
-Future<bool> getDailyReminderSettings() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getBool(dailyReminderKey) ?? false;
 }

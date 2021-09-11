@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Displaying AlertDialog at screen by passing [ctx] with [errorText] as error message and close button
 void showError(BuildContext ctx, String errorText) {
   showDialog(
     context: ctx,

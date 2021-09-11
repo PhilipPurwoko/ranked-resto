@@ -1,3 +1,4 @@
+/// Return [Duration] from now until given [hour] with 24 hour format
 Duration getDurationUntilNextTimeByHour(int hour) {
   final DateTime now = DateTime.now();
   final DateTime nowEleven = DateTime(now.year, now.month, now.day, hour);
